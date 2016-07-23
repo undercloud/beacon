@@ -1,32 +1,50 @@
 <?php
 namespace Beacon;
 
+use Beacon\Route;
+
 class Helper
 {
+	public function noop()
+	{
+		return function () {};
+	}
+
+	public static function arrayify($what)
+	{
+		if (!is_array($what)) {
+			$what = [$what];
+		}
+
+		return $what;
+	}
+
 	public static function normalize($path)
 	{
-		return '/' . trim($path, '/');
+		if ('/' === $path) return $path;
+
+		return rtrim($path, '/');
 	}
-	
+
 	public static function compile($path)
 	{
 		$regexp = '~\(?\/:[\w\)]*~';
-		
+
 		$compiler = function ($e) {
 			$param = $e[0];
-			$compiled = '/[\w]*';
-			
+			$compiled = '/[\w]+';
+
 			if ($param[0] === '(' and substr($param, -1) === ')') {
 				$compiled = '(' . $compiled . ')?';
 			}
-			
+
 			return $compiled;
-			
+
 		};
-	
+
 		return preg_replace_callback($regexp, $compiler, $path);
 	}
-	
+
 	public static function extractPlaceholder($path)
 	{
 		$segments = explode('/', $path);
@@ -38,60 +56,28 @@ class Helper
 		$segments = array_map(function ($item) {
 			return preg_replace('~\W~', '', $item);
 		}, $segments);
-		
+
 		$segments = array_flip($segments);
 
 		return $segments;
 	}
-	
-	public static function fetchPlaceholder($placeholder, $path)
+
+	public static function fetchPlaceholder(Route $route, $path)
 	{
+		$params = $route->getParams();
 		$segments = explode('/', $path);
-		
-		foreach ($placeholder as $name => $index) {
+
+		foreach ($params as $name => $index) {
 			if (isset($segments[$index])) {
-				$placeholder[$name] = $segments[$index];
+				$params[$name] = $segments[$index];
 			} else {
-				$placeholder[$name] = null;
+				$params[$name] = null;
 			}
 		}
 
-		return $placeholder;
+		$route->setParams($params);
 	}
 
-	public static function retrieveAction($controller, $path, $uri)
-	{
-		$trimmed = substr($uri, strlen($path));
-
-		if (!$trimmed) return false;
-
-		$action = reset(array_filter(explode('/', $trimmed)));
-		$action = preg_replace('~\W~', '', $action);
-
-		if (!$action) return false;
-
-		if (method_exists($controller, $action)) {
-			return $action;
-		}
-
-		return false;
-	}
-	
-	public static function checkParams($params, $where)
-	{
-		
-		return true;
-	}
-	
-	public static function arrayify($what)
-	{
-		if (!is_array($what)) {
-			$what = array($what);
-		}
-		
-		return $what;
-	}
-	
 	public static function processOptions(array $options)
 	{
 		$formatted = array();
@@ -99,36 +85,39 @@ class Helper
 			foreach ($option as $key => $value) {
 				switch ($key) {
 					case 'secure':
+					case 'where':
 						$formatted[$key] = $value;
 					break;
-					
+
 					case 'method':
-					case 'middleware':					
+					case 'middleware':
 						if (!isset($formatted[$key])) {
 							$formatted[$key] = array();
 						}
-						
+
+						$value = static::arrayify($value);
+
 						list($corns, $darnels) = call_user_func(function ($array) {
 							$ok   = array();
 							$fail = array();
-							
+
 							foreach ($array as $key => $value) {
 								if (false !== strpos($value, ':')) {
-									$ok[$key] = $value; 
+									$ok[$key] = $value;
 								} else {
-									$fail[$key] = $value; 
+									$fail[$key] = $value;
 								}
 							}
-							
+
 							return array($ok, $fail);
 						}, $value);
-						
+
 						if ($darnels) {
 							$formatted[$key] = $darnels;
 						} else {
 							foreach ($corns as $corn) {
 								list($op, $item) = explode(':', $corn, 2);
-								
+
 								if ($op === 'add') {
 									$formatted[$key][] = $item;
 								} else if ($op === 'del') {
@@ -140,7 +129,7 @@ class Helper
 				}
 			}
 		}
-		
+
 		return $formatted;
 	}
 }

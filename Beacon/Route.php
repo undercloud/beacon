@@ -2,38 +2,56 @@
 namespace Beacon;
 
 use Exception;
+use Beacon\Helper;
 
 class Route
 {
 	private $path;
 	private $domain;
 	private $callback;
+	private $method = ['post','get','put','delete','head'];
+	private $where = [];
+	private $params = [];
+	private $middleware = [];
 	private $secure = false;
-	private $params = array();
-	private $method = array();
-	private $where = array();
 	private $controller = false;
-	private $middleware = array();
-	
+
 	public function __call($method, $args)
 	{
-		$property = strtolower(substr($method, 3));
 		$prefix   = substr($method, 0, 3);
+		$property = strtolower(substr($method, 3));
 
 		if ('set' === $prefix) {
 			return $this->{$property} = reset($args);
 		} else if('get' === $prefix) {
 			return $this->{$property};
 		}
-		
+
 		throw new Exception(
 			sprintf('Method %s is not defined in %s', $method,  __CLASS__)
 		);
 	}
-	
-	public function where($param, $regexp, $modifier = null)
+
+	public function setOptions(array $options)
 	{
-		$this->where[$param] = '~' . $regexp . '~' . $modifier;
+		$keys = ['secure','method','middleware','where'];
+
+		foreach ($options as $key => $value) {
+			if (in_array($key, $keys)) {
+				$this->{$key} = $value;
+			}
+		}
+	}
+
+	public function where($param, $regexp, $default = null)
+	{
+		$where = ['regexp' => $regexp];
+
+		if (isset(func_get_args()[2])) {
+			$where['default'] = $default;
+		}
+
+		$this->where[$param] = $where;
 	}
 }
 ?>
