@@ -125,6 +125,8 @@ class Helper
 								}
 							}
 						}
+
+						$formatted[$key] = array_values($formatted[$key]);
 					break;
 				}
 			}

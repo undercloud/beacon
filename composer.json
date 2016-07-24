@@ -1,0 +1,21 @@
+{
+	"name": "undercloud/beacon",
+	"description": "Beacon - PHP Routing System",
+	"keywords": ["php","route","routing","request router","http"],
+	"homepage": "https://undercloud.github.io/beacon",
+	"license": "MIT",
+	"authors": [
+		{
+			"name": "undercloud",
+			"email": "lodashes@gmail.com"
+		}
+	],
+	"require": {
+		"php": ">=5.4.0"
+	},
+	 "autoload": {
+      "psr-4": {
+         "Beacon\\": "src/Beacon/"
+      }
+   }
+}

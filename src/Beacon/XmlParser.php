@@ -71,7 +71,16 @@ class XmlParser
 
 		$options = $this->parseOptions($node->options);
 
-		return (new ClosureQueue($this->router))->wrap($method, array($path, $call, $options));
+		$args = [$path, $call, $options];
+		if ('match' == $method) {
+			$list = explode(',', (string)$attributes['method']);
+			$args = array_merge([$list], $args);
+		}
+
+		return (
+			(new ClosureQueue($this->router))
+				->wrap($method, $args)
+		);
 	}
 
 	public function parseGroup(SimpleXMLElement $group, $domain = false)
@@ -97,7 +106,10 @@ class XmlParser
 
 		$call = $queue->getClosure();
 
-		return (new ClosureQueue($this->router))->wrap($method, array($prefix, $call, $options));
+		return (
+			(new ClosureQueue($this->router))
+				->wrap($method, [$prefix, $call, $options])
+		);
 	}
 
 	public function parseDomain(SimpleXMLElement $domain)
@@ -110,7 +122,10 @@ class XmlParser
 		$call = $this->parseGroup($domain, true);
 		$options = $this->parseOptions($domain->options);
 
-		return (new ClosureQueue($this->router))->wrap($method, array($host, $call, $options));
+		return (
+			(new ClosureQueue($this->router))
+				->wrap($method, [$host, $call, $options])
+		);
 	}
 
 	public function parse($path)
@@ -132,11 +147,11 @@ class XmlParser
 			);
 		}
 
-		if(isset($sxl->route)){
+		if (isset($sxl->route)) {
 			$queue = new ClosureQueue($this->router);
 
 			$routes = $sxl->route->children();
-			foreach($routes as $route){
+			foreach ($routes as $route) {
 				$tag = $route->getName();
 				switch ($tag) {
 					default:

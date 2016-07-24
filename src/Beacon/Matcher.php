@@ -53,7 +53,8 @@ class Matcher
 
 		if (!$slice) return false;
 
-		$action = reset(array_filter(explode('/', $slice)));
+		$filtered = array_filter(explode('/', $slice));
+		$action = reset($filtered);
 		$action = preg_replace('~\W~', '', (string)$action);
 
 		if (!$action) return false;
@@ -69,7 +70,7 @@ class Matcher
 		if (!$class->hasMethod($action)) return false;
 		if (!$class->getMethod($action)->isPublic()) return false;
 
-		$route->setCallback($controller . '::' . $action);
+		$route->setCallback($controller . '::' . $class->getMethod($action)->getName());
 
 		return true;
 	}

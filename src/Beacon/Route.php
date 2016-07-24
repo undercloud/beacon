@@ -21,9 +21,15 @@ class Route
 		$prefix   = substr($method, 0, 3);
 		$property = strtolower(substr($method, 3));
 
+		if (!property_exists($this, $property)) {
+			throw new Exception(
+				sprintf('Property %s is not defined in %s', $property,  __CLASS__)
+			);
+		}
+
 		if ('set' === $prefix) {
 			return $this->{$property} = reset($args);
-		} else if('get' === $prefix) {
+		} else if ('get' === $prefix) {
 			return $this->{$property};
 		}
 

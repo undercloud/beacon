@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beacon>
+  <route>
+  	<options>
+  		<secure value="false"/>
+  		<middleware value="One,Two,Three"/>
+  	</options>
+    <on path="/api" call="Controller::action" />
+    <on path="/api/x" call="Ontroller::sextion">
+	  <options>
+		<secure value="true"/>
+		<method value="post,get" />
+		<middleware value="One,Two,Three" />
+		<where>
+			<name regexp="/\d+/" default="John" />
+			<surname regexp="/\a+/" />
+		</where>
+	  </options>
+	</on>
+	<match method="post,get" path="/ok" call="X::x" />
+	<group>
+		<options>
+			<method value="head" />
+		</options>
+		<on path="/a" call="Controller::action" />
+		<on path="/b" call="Controller::action" />
+		<group>
+			<on path="/c" call="Controller::action" />
+		</group>
+	</group>
+	<domain>
+		<options>
+			<method value="foo,bar" />
+		</options>
+		<on path="/me" call="Controller::action"/>
+		<group>
+			<on path="/d" call="Controller::action" />
+		</group>
+	</domain>
+  </route>
+</beacon>

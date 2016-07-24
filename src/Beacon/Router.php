@@ -37,7 +37,7 @@ class Router
 
 		$this->fallbackRoute = new Route;
 		$this->fallbackRoute->setMethod([]);
-		$this->fallbackRoute->setCall($this->helper->noop());
+		$this->fallbackRoute->setCallback($this->helper->noop());
 	}
 
 	private function processOptions(array $options)
@@ -89,7 +89,7 @@ class Router
 			$route->setController($this->controller);
 		}
 
-		if (isset($this->routes[$key])){
+		if (isset($this->routes[$key])) {
 			throw new RouteException(
 				sprintf('Path %s already exists', $key)
 			);
@@ -241,7 +241,7 @@ class Router
 
 		$uri = $this->helper->normalize($uri);
 		foreach ($this->routes as $route) {
-			if(!$this->matcher->checkPath($route, $uri)) {
+			if (!$this->matcher->checkPath($route, $uri)) {
 				continue;
 			}
 
@@ -267,7 +267,7 @@ class Router
 				return $this->fallbackRoute;
 			}
 
-			$this->helper->fetchPlaceholder($params, $uri);
+			$this->helper->fetchPlaceholder($route, $uri);
 
 			if (!$this->matcher->checkWhere($route)) {
 				RouteError::setErrorCode(RouteError::WHERE_REGEX_ERROR);
