@@ -15,7 +15,10 @@ PHP 5.4+
 
 ##Setup
 ```PHP
+// if installed by composer
 require '/path/to/vendor/autoload.php';
+// if installed manually
+require '/path/to/Beacon/Beacon.php';
 
 $router = new Beacon\Router(
   // current hostname
