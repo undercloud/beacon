@@ -7,7 +7,7 @@
 - Domain condition support
 - HTTPS condition support
 - Controller bindings
-- REST
+- RESTfull
 
 ##Requirements
 PHP 5.4+
