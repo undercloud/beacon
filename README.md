@@ -16,7 +16,7 @@ by composer
 ```JSON
 {
     "require": {
-        "undercloud/beacon": "*"
+        "undercloud/beacon": ">=1.5"
     }
 }
 ```
