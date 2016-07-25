@@ -1,5 +1,5 @@
 #Beacon - PHP Routing System
-
+[![Build Status](https://travis-ci.org/undercloud/beacon.svg?branch=master)](https://travis-ci.org/undercloud/beacon)
 ##Features
 - Zero dependency
 - PCRE pattern path support
