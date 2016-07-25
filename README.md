@@ -63,7 +63,8 @@ $route->getMiddleware();
 ###Methods
 Complete list of avail route methods
 ```PHP
-/* $path - request path, example /users 
+/* 
+ * $path - request path, example /users 
  * $call - Controller::action or Closure
  * $options - array of options
  * $methods - array of http methods, example ['post','put']
