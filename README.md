@@ -13,8 +13,17 @@ PHP 5.4+
 ##Install
 
 ##Setup
+```PHP
+require '/path/to/vendor/autoload.php';
 
-##Define
+$router = new Beacon\Router(
+  'host'   => $_SERVER['SERVER_NAME'],
+  'method' => $_SERVER['REQUEST_METHOD'],
+  // optionaly, true if request over https
+  'secure' => true
+);
+```
+##Define routes
 
 ```PHP
 $router
