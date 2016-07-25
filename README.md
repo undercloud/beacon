@@ -48,7 +48,15 @@ $router
 ###Domain
 
 ###REST
-
+|Verb	|Path					|Action |Call
+|-------|-----------------------|-------|-------------------------
+|GET	|/photo					|index  |ControllerPhoto::index
+|GET	|/photo/create			|create	|ControllerPhoto::create
+|POST	|/photo					|store	|ControllerPhoto::store
+|GET	|/photo/{photo}			|show	|ControllerPhoto::show
+|GET	|/photo/{photo}/edit	|edit	|ControllerPhoto::edit
+|PUT	|/photo/{photo}			|update	|ControllerPhoto::update
+|DELETE	|/photo/{photo}			|destroy|ControllerPhoto::destroy
 ##Options
 
 ##Middleware
