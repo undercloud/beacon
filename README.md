@@ -12,7 +12,16 @@
 ##Requirements
 PHP 5.4+
 ##Install
-
+by composer
+`composer require undercloud/beacon`
+or
+```JSON
+{
+    "require": {
+        "undercloud/beacon": "*"
+    }
+}
+```
 ##Setup
 ```PHP
 // if installed by composer
@@ -174,14 +183,14 @@ $router
 ```
 
 ###REST
-
+It so easy to make RESTfull service, define path: 
 ```PHP
 $router->resource('/photo', 'ControllerPhoto', [
   // define param name, default 'id'
   'name' => 'photo'
 ]);
 ```
-define RESTfull controller
+and define controller with specific methods:
 ```PHP
 class ControllerPhoto
 {
