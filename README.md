@@ -58,6 +58,7 @@ Complete list of avail route methods
 * $router->connect($path, $call [, $options]);
 * $router->patch($path, $call [, $options]);
 * $router->match(array $methods, $path, $call [, $options]);
+
 ###Params
 Beacon supports named params.
 For example route with binded params:
