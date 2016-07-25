@@ -6,6 +6,7 @@
 - Route groups
 - Domain condition support
 - HTTPS condition support
+- Controller bindings
 - REST
 
 ##Requirements
@@ -17,7 +18,9 @@ PHP 5.4+
 require '/path/to/vendor/autoload.php';
 
 $router = new Beacon\Router(
+  // current hostname
   'host'   => $_SERVER['SERVER_NAME'],
+  // current http method
   'method' => $_SERVER['REQUEST_METHOD'],
   // optionaly, true if request over https
   'secure' => true
