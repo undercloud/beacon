@@ -239,3 +239,6 @@ For loading XML file with routes use next code:
 $router->loadFromXml('/path/to/routes.xml');
 ```
 see [beacon.xml](https://github.com/undercloud/beacon/blob/master/beacon.xml) file specification
+
+##Error Handling
+see [Otherwise section](https://github.com/undercloud/beacon#otherwise)
