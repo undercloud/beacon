@@ -88,7 +88,23 @@ class ControllerPhoto
 |PUT	|/photo/:photo			|update	|ControllerPhoto::update
 |DELETE	|/photo/:photo			|destroy|ControllerPhoto::destroy
 ##Options
-
+Beacon supports named params.
+For example route with binded params:
+```PHP
+$router->on('/user/:id/:name(/:nickname)', 'ControllerUser::getUser');
+```
+with request:
+```PHP
+$route->go('/user/78/John');
+```
+will be fetched into:
+```PHP
+[
+  'id'       => 78,
+  'name'     => 'John',
+  'nickname' => null
+]
+```
 ##Middleware
 
 ##Xml
