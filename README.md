@@ -154,20 +154,34 @@ $route = $router->go('/api/users');
 groups can be nested:
 ```PHP
 $router->group('/api', function ($router) {
-  $router->group('/v1.1'/ function($router) {
+  $router->group('/v1.1' function($router) {
     $router->get('/users', 'ControllerUsers::getUsers')
   });
 });
 ```
 ###Domain
+If your app can de accessed from  multiple hostnames, you can setup personal routes:
+```PHP
+$router
+  ->domain('api.example.com', function ($router) {
+    $router->get('/', function () {
+      echo 'api';
+    });
+  })
+  ->get('/', function () {
+    echo 'main domain';
+  });
+```
 
 ###REST
+
 ```PHP
 $router->resource('/photo', 'ControllerPhoto', [
   // define param name, default 'id'
   'name' => 'photo'
 ]);
 ```
+define RESTfull controller
 ```PHP
 class ControllerPhoto
 {
@@ -181,9 +195,14 @@ class ControllerPhoto
     // build form
   }
   
+  public function store()
+  {
+    // save form
+  }
   ...
 }
 ```
+Next table show conformity between request path and controller methods:
 
 |Verb	|Path					|Action |Call
 |-------|-----------------------|-------|-------------------------
@@ -194,6 +213,7 @@ class ControllerPhoto
 |GET	|/photo/:photo/edit	|edit	|ControllerPhoto::edit
 |PUT	|/photo/:photo			|update	|ControllerPhoto::update
 |DELETE	|/photo/:photo			|destroy|ControllerPhoto::destroy
+Note, that if requested method undefined or is not public, Beacon return fallback function
 ##Options
 
 ##Middleware
