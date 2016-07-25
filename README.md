@@ -104,7 +104,7 @@ $router
 			case Beacon\RouterError::REST_RESOLVE_ERROR:
 	
 			break;
-      		}
+      	}
 	});
 ```
 ###Controller
