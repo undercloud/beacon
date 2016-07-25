@@ -35,17 +35,14 @@ Simple example:
 $router
   ->on('/', 'Controller::index')
   ->get('/user/:id', 'ControllerUser::getUser')
+  ->post('/user/:id', function () { ... })
+  ->put('/user/:id', function () { ... })
+  ->delete('/user/:id(/:nickname)', 'ControllerUser::remove')
   ->otherwise(function() {
     echo 404;
   });
-/*
-retrieve current request path if unknown
-if ($pos = strpos($_SERVER['REQUEST_URI'],'?')) {
-    $path = substr($_SERVER['REQUEST_URI'], 0, $pos);
-} else {
-    $path = $_SERVER['REQUEST_URI'];
-}
-*/
+
+// return Beacon\Route object
 $route = $router->go($path);
 ```
 ###Methods
@@ -178,6 +175,8 @@ class ControllerPhoto
 ##Middleware
 
 ##Xml
-
-##Handle Errors
-See \#otherwise
+For loading XML file with routes use next code:
+```PHP
+$router->loadFromXml('/path/to/routes.xml');
+```
+see [beacon.xml](https://github.com/undercloud/beacon/blob/master/beacon.xml) file specification
