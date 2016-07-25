@@ -86,23 +86,25 @@ $router
 	->otherwise(function(){
 		switch(Beacon\RouterError::getErrorCode()){
 			case Beacon\RouterError::NOT_FOUND_ERROR:
-  	
+  			/* Same as 404 error, cannot find any
+  			path for current request */
   			break;
   	
 			case Beacon\RouterError::SECURE_ERROR:
-	
+			/* Need secured connection over https */
 			break;
 	
 			case Beacon\RouterError::CONTROLLER_RESOLVE_ERROR:
-	
+			/* When given method in binded contoller is unavailable */
 			break;
 	
 			case Beacon\RouterError::WHERE_REGEX_ERROR:
-	
+			/* Fail parameter regex test in ->where(...) */
 			break;
 	
 			case Beacon\RouterError::REST_RESOLVE_ERROR:
-	
+			/* Cannot find implemented method 
+			in given REST controller*/
 			break;
       	}
 	});
