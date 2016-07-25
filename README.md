@@ -49,17 +49,16 @@ $router
     echo 404;
   });
 
-// return Beacon\Route object
+// return Beacon\Route object with next methods:
 $route = $router->go($path);
-
 // return route path
-$route->getPath()
+$route->getPath();
 // get callback
-$route->getCallback()
+$route->getCallback();
 // get binded params
-$route->getParams()
+$route->getParams();
 // get middlewares list
-$route->getMiddleware()
+$route->getMiddleware();
 ```
 ###Methods
 Complete list of avail route methods
