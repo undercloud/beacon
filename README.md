@@ -49,17 +49,37 @@ $router
 
 ###REST
 ```PHP
-$router->resource('/photo', 'ControllerPhoto');
+$router->resource('/photo', 'ControllerPhoto', [
+  // define param name, default 'id'
+  'name' => 'photo'
+]);
 ```
+```PHP
+class ControllerPhoto
+{
+  public function index()
+  {
+    // build list
+  }
+  
+  public function create()
+  {
+    // build form
+  }
+  
+  ...
+}
+```
+
 |Verb	|Path					|Action |Call
 |-------|-----------------------|-------|-------------------------
 |GET	|/photo					|index  |ControllerPhoto::index
 |GET	|/photo/create			|create	|ControllerPhoto::create
 |POST	|/photo					|store	|ControllerPhoto::store
-|GET	|/photo/{photo}			|show	|ControllerPhoto::show
-|GET	|/photo/{photo}/edit	|edit	|ControllerPhoto::edit
-|PUT	|/photo/{photo}			|update	|ControllerPhoto::update
-|DELETE	|/photo/{photo}			|destroy|ControllerPhoto::destroy
+|GET	|/photo/:photo			|show	|ControllerPhoto::show
+|GET	|/photo/:photo/edit	|edit	|ControllerPhoto::edit
+|PUT	|/photo/:photo			|update	|ControllerPhoto::update
+|DELETE	|/photo/:photo			|destroy|ControllerPhoto::destroy
 ##Options
 
 ##Middleware
