@@ -85,6 +85,10 @@ If request cannot be resolved, you can define fallback.
 $router
 	->otherwise(function(){
 		switch(Beacon\RouterError::getErrorCode()){
+			case Beacon\RouterError::NO_ERROR:
+			/* All fine, only for example, never exists in otherwise block */
+			break;
+			
 			case Beacon\RouterError::NOT_FOUND_ERROR:
   			/* Same as 404 error, cannot find any
   			path for current request */
