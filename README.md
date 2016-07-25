@@ -80,7 +80,33 @@ Now params will be fetched into:
 ]
 ```
 ###Otherwise
-
+If request cannot be resolved, you can define fallback.
+```PHP
+$router
+  ->otherwise(function(){
+      switch(Beacon\RouterError::getErrorCode()){
+  	case Beacon\RouterError::NOT_FOUND_ERROR:
+  	
+  	break;
+  	
+	case Beacon\RouterError::SECURE_ERROR:
+	
+	break;
+	
+	case Beacon\RouterError::CONTROLLER_RESOLVE_ERROR:
+	
+	break;
+	
+	case Beacon\RouterError::WHERE_REGEX_ERROR:
+	
+	break;
+	
+	case Beacon\RouterError::REST_RESOLVE_ERROR:
+	
+	break;
+      }
+  })
+```
 ###Controller
 
 ###Group
