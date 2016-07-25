@@ -47,6 +47,8 @@ $router
 
 ###Domain
 
+###REST
+
 ##Options
 
 ##Middleware
