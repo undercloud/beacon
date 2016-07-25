@@ -84,7 +84,7 @@ $router->on('/user/:id/:name(/:nickname)', 'ControllerUser::getUser');
 ```
 with request:
 ```PHP
-$route->go('/user/78/John');
+$route = $router->go('/user/78/John');
 ```
 will be fetched into:
 ```PHP
@@ -112,6 +112,7 @@ Now params will be fetched into:
   'nickname' => 'Guest'
 ]
 ```
+for retrieve params use ```$route->getParams()```
 ###Otherwise
 If request cannot be resolved, you can define fallback.
 ```PHP
@@ -151,7 +152,7 @@ You can define controller namespace and bind methods to path:
 ```PHP
 $router->controller('/users', 'ControllerUsers');
 
-$route = $route->go('/users/get-users');
+$route = $router->go('/users/get-users');
 // will return ControllerUsers::getUsers
 $call = $route->getCallback();
 ```
