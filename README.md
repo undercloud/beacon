@@ -132,7 +132,15 @@ $router
 	});
 ```
 ###Controller
+You can define controller namespace and bind methods to path:
+```PHP
+$router->controller('/users', 'ControllerUsers');
 
+$route = $route->go('/users/get-users');
+// wil return ControllerUsers::getUsers
+$call = $route->getCallback();
+```
+if requested method undefined or is not public, Beacon return fallback function 
 ###Group
 
 ###Domain
