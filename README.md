@@ -25,6 +25,13 @@ $router = new Beacon\Router(
   // optionaly, true if request over https
   'secure' => true
 );
+
+// retrieve current request path if unknown, example
+if ($pos = strpos($_SERVER['REQUEST_URI'],'?')) {
+	$path = substr($_SERVER['REQUEST_URI'], 0, $pos);
+} else {
+	$path = $_SERVER['REQUEST_URI'];
+}
 ```
 ##Define routes
 
