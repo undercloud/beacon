@@ -2,7 +2,7 @@
 <beacon>
   <route>
   	<options>
-  		<!-- global options -->
+      <!-- global options -->
   	</options>
     <on path="/" call="Foo::bar" />
     <on path="/users/:name/:surname" call="Foo::bar">
