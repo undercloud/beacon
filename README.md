@@ -48,6 +48,9 @@ $router
 ###Domain
 
 ###REST
+```PHP
+$router->resource('/photo', 'ControllerPhoto');
+```
 |Verb	|Path					|Action |Call
 |-------|-----------------------|-------|-------------------------
 |GET	|/photo					|index  |ControllerPhoto::index
