@@ -44,8 +44,41 @@ $router
   ->otherwise(function() { ... })
 ```
 ###Params
-
-
+Beacon supports named params.
+For example route with binded params:
+```PHP
+$router->on('/user/:id/:name(/:nickname)', 'ControllerUser::getUser');
+```
+with request:
+```PHP
+$route->go('/user/78/John');
+```
+will be fetched into:
+```PHP
+[
+  'id'       => 78,
+  'name'     => 'John',
+  'nickname' => null
+]
+```
+You can also add additional check for params:
+```PHP
+$router
+  ->on('/user/:id/:name(/:nickname)', 'ControllerUser::getUser')
+    // check numeric id
+    ->where('id', '/\d+/')
+    // empty or invalid nickname will be replaced with 'Guest'
+    ->where('nickname', '/[A-Za-z0-9]+/', 'Guest')
+  ->on(...);
+```
+Now params will be fetched into:
+```PHP
+[
+  'id'       => 78,
+  'name'     => 'John',
+  'nickname' => 'Guest'
+]
+```
 ###Otherwise
 
 ###Controller
@@ -88,23 +121,7 @@ class ControllerPhoto
 |PUT	|/photo/:photo			|update	|ControllerPhoto::update
 |DELETE	|/photo/:photo			|destroy|ControllerPhoto::destroy
 ##Options
-Beacon supports named params.
-For example route with binded params:
-```PHP
-$router->on('/user/:id/:name(/:nickname)', 'ControllerUser::getUser');
-```
-with request:
-```PHP
-$route->go('/user/78/John');
-```
-will be fetched into:
-```PHP
-[
-  'id'       => 78,
-  'name'     => 'John',
-  'nickname' => null
-]
-```
+
 ##Middleware
 
 ##Xml
