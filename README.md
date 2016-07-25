@@ -142,7 +142,23 @@ $call = $route->getCallback();
 ```
 if requested method undefined or is not public, Beacon return fallback function 
 ###Group
+Routes can be grouped:
+```PHP
+$router->group('/api', function ($router) {
+  $router->get('/users', 'ControllerUsers::getUsers')
+});
 
+$route = $router->go('/api/users');
+...
+```
+groups can be nested:
+```PHP
+$router->group('/api', function ($router) {
+  $router->group('/v1.1'/ function($router) {
+    $router->get('/users', 'ControllerUsers::getUsers')
+  });
+});
+```
 ###Domain
 
 ###REST
