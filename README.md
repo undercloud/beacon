@@ -9,7 +9,7 @@
 - REST
 
 ##Requirements
-
+PHP 5.4+
 ##Install
 
 ##Setup
