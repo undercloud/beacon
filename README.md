@@ -162,3 +162,4 @@ class ControllerPhoto
 ##Xml
 
 ##Handle Errors
+See \#otherwise
