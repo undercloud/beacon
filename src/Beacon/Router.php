@@ -17,6 +17,7 @@ class Router
 	private $domain;
 	private $groups = [];
 	private $options = [];
+	private $rest = false;
 	private $controller = false;
 
 	private $routes = [];
@@ -36,7 +37,6 @@ class Router
 		$this->helper  = new Helper;
 
 		$this->fallbackRoute = new Route;
-		$this->fallbackRoute->setMethod([]);
 		$this->fallbackRoute->setCallback($this->helper->noop());
 	}
 
@@ -58,9 +58,13 @@ class Router
 
 	private function bind($path, $call, array $options = [])
 	{
-		$path = $this->helper->normalize($path);
-
 		$options = $this->processOptions($options);
+
+		if (!isset($options['method']) or !in_array($this->method, $options['method'])) {
+			return;
+		}
+
+		$path = $this->helper->normalize($path);
 
 		$path   = implode($this->groups) . $path;
 		$params = $this->helper->extractPlaceholder($path);
@@ -89,6 +93,10 @@ class Router
 			$route->setController($this->controller);
 		}
 
+		if ($this->rest) {
+			$route->setRest($this->rest);
+		}
+
 		if (isset($this->routes[$key])) {
 			throw new RouteException(
 				sprintf('Path %s already exists', $key)
@@ -100,6 +108,10 @@ class Router
 
 	public function on($path, $call, array $options = [])
 	{
+		if (!isset($options['method'])) {
+			$options['method'] = ['post','get','put','delete'];
+		}
+
 		$this->bind($path, $call, $options);
 
 		return $this;
@@ -215,8 +227,29 @@ class Router
 	public function controller($path, $controller, array $options = [])
 	{
 		$this->controller = true;
-		$this->bind($path, $controller, $options);
+		$this->on($path, $controller, $options);
 		$this->controller = false;
+
+		return $this;
+	}
+
+	public function resource($path, $controller, array $options = [])
+	{
+		$name = 'id';
+		if (isset($options['name'])) {
+			$name = $options['name'];
+			unset($options['name']);
+		}
+
+		$this->rest = true;
+		$this->get($path, $controller . '::index', $options);
+		$this->get($path . '/create', $controller . '::create', $options);
+		$this->post($path, $controller . '::store', $options);
+		$this->get($path . '/:' . $name, $controller . '::show', $options);
+		$this->get($path . '/:' . $name . '/edit', $controller . '::edit', $options);
+		$this->put($path . '/:' . $name, $controller . '::update',  $options);
+		$this->delete($path . '/:' . $name, $controller . '::destroy', $options);
+		$this->rest = false;
 
 		return $this;
 	}
@@ -249,12 +282,6 @@ class Router
 				continue;
 			}
 
-			if (!$this->matcher->checkMethod($route, $this->method)) {
-				RouteError::setErrorCode(RouteError::HTTP_METHOD_ERROR);
-
-				return $this->fallbackRoute;
-			}
-
 			if (!$this->matcher->checkSecure($route, $this->secure)) {
 				RouteError::setErrorCode(RouteError::SECURE_ERROR);
 
@@ -263,6 +290,12 @@ class Router
 
 			if (!$this->matcher->checkController($route, $uri)) {
 				RouteError::setErrorCode(RouteError::CONTROLLER_RESOLVE_ERROR);
+
+				return $this->fallbackRoute;
+			}
+
+			if (!$this->matcher->checkRest($route)) {
+				RouteError::setErrorCode(RouteError::REST_RESOLVE_ERROR);
 
 				return $this->fallbackRoute;
 			}

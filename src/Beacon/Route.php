@@ -9,10 +9,11 @@ class Route
 	private $path;
 	private $domain;
 	private $callback;
-	private $method = ['post','get','put','delete','head'];
+	private $method = [];
 	private $where = [];
 	private $params = [];
 	private $middleware = [];
+	private $rest = false;
 	private $secure = false;
 	private $controller = false;
 

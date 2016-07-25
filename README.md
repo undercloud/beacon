@@ -1,12 +1,20 @@
-#Features
+#Beacon - PHP Routing System
 
-#Requirements
+##Features
+- Zero dependency
+- PCRE pattern path support
+- Route groups
+- Domain condition support
+- HTTPS condition support
+- REST
 
-#Install
+##Requirements
 
-#Setup
+##Install
 
-#Define
+##Setup
+
+##Define
 
 ```PHP
 $router
@@ -16,21 +24,21 @@ $router
   ->match(['post','put'], '')
   ->otherwise(function() { ... })
 ```
-##Params
+###Params
 
 
-##Otherwise
+###Otherwise
 
-##Controller
+###Controller
 
-##Group
+###Group
 
-##Domain
+###Domain
 
-#Options
+##Options
 
-#Middleware
+##Middleware
 
-#Xml
+##Xml
 
-#Handle Errors
+##Handle Errors

@@ -6,9 +6,9 @@ class RouteError
 	const NO_ERROR                 = 0;
 	const NOT_FOUND_ERROR          = 1;
 	const SECURE_ERROR             = 2;
-	const HTTP_METHOD_ERROR        = 4;
-	const CONTROLLER_RESOLVE_ERROR = 8;
-	const WHERE_REGEX_ERROR        = 16;
+	const CONTROLLER_RESOLVE_ERROR = 4;
+	const WHERE_REGEX_ERROR        = 8;
+	const REST_RESOLVE_ERROR       = 16;
 
 	protected static $code = 0;
 

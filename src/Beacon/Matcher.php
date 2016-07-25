@@ -15,13 +15,6 @@ class Matcher
 		return preg_match($pattern, $uri);
 	}
 
-	public function checkMethod(Route $route, $method)
-	{
-		$list = $route->getMethod();
-
-		return in_array($method, $list);
-	}
-
 	public function checkDomain(Route $route, $host)
 	{
 		$regexp = $route->getDomain();
@@ -73,6 +66,15 @@ class Matcher
 		$route->setCallback($controller . '::' . $class->getMethod($action)->getName());
 
 		return true;
+	}
+
+	public function checkRest(Route $route)
+	{
+		if (!$route->getRest()) return true;
+
+		list($controller, $action) = explode('::', $route->getCallback());
+
+		return method_exists($controller, $action);
 	}
 
 	public function checkWhere(Route $route)
