@@ -2,40 +2,38 @@
 <beacon>
   <route>
   	<options>
-  		<secure value="false"/>
-  		<middleware value="One,Two,Three"/>
+  		<!-- global options -->
   	</options>
-    <on path="/api" call="Controller::action" />
-    <on path="/api/x" call="Ontroller::sextion">
-	  <options>
-		<secure value="true"/>
-		<method value="post,get" />
-		<middleware value="One,Two,Three" />
-		<where>
-			<name regexp="/\d+/" default="John" />
-			<surname regexp="/\a+/" />
-		</where>
-	  </options>
-	</on>
-	<match method="post,get" path="/ok" call="X::x" />
-	<group>
-		<options>
-			<method value="head" />
-		</options>
-		<on path="/a" call="Controller::action" />
-		<on path="/b" call="Controller::action" />
-		<group>
-			<on path="/c" call="Controller::action" />
-		</group>
-	</group>
-	<domain>
-		<options>
-			<method value="foo,bar" />
-		</options>
-		<on path="/me" call="Controller::action"/>
-		<group>
-			<on path="/d" call="Controller::action" />
-		</group>
-	</domain>
+    <on path="/" call="Foo::bar" />
+    <on path="/users/:name/:surname" call="Foo::bar">
+      <options>
+        <secure value="true" />
+        <method value="post,get" />
+        <middleware value="One,Two,Three" />
+        <where>
+          <name regexp="/\d+/" default="John" />
+          <surname regexp="/\w+/" />
+        </where>
+      </options>
+    </on>
+    <get path="/api" call="Foo::bar" />
+    <group path="/api">
+      <post path="/api" call="Foo::bar" />
+      <options>
+        <!-- group options -->
+      </options>
+    </group>
+    <controller path="/api" call="Foo::bar">
+      <options>
+        <!-- controller options -->
+      </options>
+    </controller>
+    <resource path="/api" call="Foo::bar"/>
+    <domain host="*.example.com">
+      <on path="/api" call="Foo::bar" />
+      <options>
+        <!-- domain options -->
+      </options>
+    </domain>
   </route>
 </beacon>

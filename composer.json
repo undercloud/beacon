@@ -1,4 +1,5 @@
 {
+	"version": "1.5.0",
 	"name": "undercloud/beacon",
 	"description": "Beacon - PHP Routing System",
 	"keywords": ["php","route","routing","request router","http"],

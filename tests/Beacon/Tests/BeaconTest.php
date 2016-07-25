@@ -88,13 +88,15 @@ class BeaconTest extends PHPUnit_Framework_TestCase
 	public function testWhere()
 	{
 		$route = $this->router
-			->on('/user/:id', null)
+			->on('/user/:id(/:nickname)', null)
 				->where('id', '/\d+/' , 1)
+				->where('nickname', '/[A-Za-z]+/' , 'Guest')
 			->go('/user/num');
 
 		$params = $route->getParams();
 
 		$this->assertEquals(1, $params['id']);
+		$this->assertEquals('Guest', $params['nickname']);
 	}
 
 	public function testGroup()

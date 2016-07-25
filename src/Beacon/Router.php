@@ -12,7 +12,7 @@ class Router
 {
 	private $host;
 	private $method;
-	private $secure = false;
+	private $isSecured = false;
 
 	private $domain;
 	private $groups = [];
@@ -29,9 +29,9 @@ class Router
 
 	public function __construct(array $options = [])
 	{
-		if (isset($options['host']))   $this->host   = $options['host'];
-		if (isset($options['secure'])) $this->secure = $options['secure'];
-		if (isset($options['method'])) $this->method = strtolower($options['method']);
+		if (isset($options['host']))      $this->host   = $options['host'];
+		if (isset($options['isSecured'])) $this->isSecured = $options['isSecured'];
+		if (isset($options['method']))    $this->method = strtolower($options['method']);
 
 		$this->matcher = new Matcher;
 		$this->helper  = new Helper;
@@ -157,38 +157,6 @@ class Router
 		return $this;
 	}
 
-	public function options($path, $call, array $options = [])
-	{
-		$options['method'] = ['options'];
-		$this->bind($path, $call, $options);
-
-		return $this;
-	}
-
-	public function head($path, $call, array $options = [])
-	{
-		$options['method'] = ['head'];
-		$this->bind($path, $call, $options);
-
-		return $this;
-	}
-
-	public function connect($path, $call, array $options = [])
-	{
-		$options['method'] = ['connect'];
-		$this->bind($path, $call, $options);
-
-		return $this;
-	}
-
-	public function patch($path, $call, array $options = [])
-	{
-		$options['method'] = ['patch'];
-		$this->bind($path, $call, $options);
-
-		return $this;
-	}
-
 	public function otherwise($call, array $options = [])
 	{
 		$options = $this->processOptions($options);
@@ -282,7 +250,7 @@ class Router
 				continue;
 			}
 
-			if (!$this->matcher->checkSecure($route, $this->secure)) {
+			if (!$this->matcher->checkSecure($route, $this->isSecured)) {
 				RouteError::setErrorCode(RouteError::SECURE_ERROR);
 
 				return $this->fallbackRoute;
