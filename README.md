@@ -51,6 +51,15 @@ $router
 
 // return Beacon\Route object
 $route = $router->go($path);
+
+// return route path
+$route->getPath()
+// get callback
+$route->getCallback()
+// get binded params
+$route->getParams()
+// get middlewares list
+$route->getMiddleware()
 ```
 ###Methods
 Complete list of avail route methods
