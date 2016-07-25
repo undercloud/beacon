@@ -48,17 +48,18 @@ $router
 ```
 ###Methods
 Complete list of avail route methods
-* $router->on($path, $call [, $options]);
-* $router->get($path, $call [, $options]);
-* $router->post($path, $call [, $options]);
-* $router->put($path, $call [, $options]);
-* $router->delete($path, $call [, $options]);
-* $router->head($path, $call [, $options]);
-* $router->options($path, $call [, $options]);
-* $router->connect($path, $call [, $options]);
-* $router->patch($path, $call [, $options]);
-* $router->match(array $methods, $path, $call [, $options]);
-
+```PHP
+ $router->on($path, $call [, $options]);
+ $router->get($path, $call [, $options]);
+ $router->post($path, $call [, $options]);
+ $router->put($path, $call [, $options]);
+ $router->delete($path, $call [, $options]);
+ $router->head($path, $call [, $options]);
+ $router->options($path, $call [, $options]);
+ $router->connect($path, $call [, $options]);
+ $router->patch($path, $call [, $options]);
+ $router->match(array $methods, $path, $call [, $options]);
+```
 ###Params
 Beacon supports named params.
 For example route with binded params:
