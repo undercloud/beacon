@@ -12,9 +12,9 @@
 ##Requirements
 PHP 5.4+
 ##Install
-by composer
-`composer require undercloud/beacon`
-or
+by composer  
+`composer require undercloud/beacon`  
+or  
 ```JSON
 {
     "require": {
