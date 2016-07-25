@@ -26,39 +26,43 @@ $router = new Beacon\Router(
   // current http method
   'method' => $_SERVER['REQUEST_METHOD'],
   // optionaly, true if request over https
-  'secure' => true
+  'isSecured' => true
 );
-
-// retrieve current request path if unknown, example
-if ($pos = strpos($_SERVER['REQUEST_URI'],'?')) {
-	$path = substr($_SERVER['REQUEST_URI'], 0, $pos);
-} else {
-	$path = $_SERVER['REQUEST_URI'];
-}
 ```
 ##Define routes
-
+Simple example:
 ```PHP
 $router
-  ->on()
-  ->get()
-  ->post('/')
-  ->match(['post','put'], '')
-  ->otherwise(function() { ... })
+  ->on('/', 'Controller::index')
+  ->get('/user/:id', 'ControllerUser::getUser')
+  ->otherwise(function() {
+    echo 404;
+  });
+/*
+retrieve current request path if unknown
+if ($pos = strpos($_SERVER['REQUEST_URI'],'?')) {
+    $path = substr($_SERVER['REQUEST_URI'], 0, $pos);
+} else {
+    $path = $_SERVER['REQUEST_URI'];
+}
+*/
+$route = $router->go($path);
 ```
 ###Methods
 Complete list of avail route methods
 ```PHP
- $router->on($path, $call [, $options]);
- $router->get($path, $call [, $options]);
- $router->post($path, $call [, $options]);
- $router->put($path, $call [, $options]);
- $router->delete($path, $call [, $options]);
- $router->head($path, $call [, $options]);
- $router->options($path, $call [, $options]);
- $router->connect($path, $call [, $options]);
- $router->patch($path, $call [, $options]);
- $router->match(array $methods, $path, $call [, $options]);
+/* $path - request path, example /users 
+ * $call - Controller::action or Closure
+ * $options - array of options
+ * $methods - array of http methods, example ['post','put']
+ */
+
+$router->on($path, $call [, $options]);
+$router->get($path, $call [, $options]);
+$router->post($path, $call [, $options]);
+$router->put($path, $call [, $options]);
+$router->delete($path, $call [, $options]);
+$router->match(array $methods, $path, $call [, $options]);
 ```
 ###Params
 Beacon supports named params.
