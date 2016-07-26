@@ -12,7 +12,7 @@
 ##Requirements
 PHP 5.4+
 ##Install
-by composer  
+by composer
 ```JSON
 {
     "require": {
@@ -63,7 +63,7 @@ $route->getMiddleware();
 ###Methods
 Complete list of avail route methods
 ```PHP
-/* $path - request path, example /users 
+/* $path - request path, example /users
  * $call - Controller::action or Closure
  * $options - array of options
  * $methods - array of http methods, example ['post','put']
@@ -122,26 +122,26 @@ $router
 			case Beacon\RouterError::NO_ERROR:
 			/* All fine, only for example, never exists in otherwise block */
 			break;
-			
+
 			case Beacon\RouterError::NOT_FOUND_ERROR:
   			/* Same as 404 error, cannot find any
   			path for current request */
   			break;
-  	
+
 			case Beacon\RouterError::SECURE_ERROR:
 			/* Need secured connection over https */
 			break;
-	
+
 			case Beacon\RouterError::CONTROLLER_RESOLVE_ERROR:
 			/* When given method in binded contoller is unavailable */
 			break;
-	
+
 			case Beacon\RouterError::WHERE_REGEX_ERROR:
 			/* Fail parameter regex test in ->where(...) */
 			break;
-	
+
 			case Beacon\RouterError::REST_RESOLVE_ERROR:
-			/* Cannot find implemented method 
+			/* Cannot find implemented method
 			in given REST controller*/
 			break;
       	}
@@ -156,7 +156,7 @@ $route = $router->go('/users/get-users');
 // will return ControllerUsers::getUsers
 $call = $route->getCallback();
 ```
-if requested method undefined or is not public, Beacon return fallback function 
+if requested method undefined or is not public, Beacon return fallback function
 ###Group
 Routes can be grouped:
 ```PHP
@@ -190,7 +190,7 @@ $router
 ```
 
 ###REST
-It so easy to make RESTfull service, define path: 
+It so easy to make RESTfull service, define path:
 ```PHP
 $router->resource('/photo', 'ControllerPhoto', [
   // define param name, default 'id'
@@ -205,12 +205,12 @@ class ControllerPhoto
   {
     // build list
   }
-  
+
   public function create()
   {
     // build form
   }
-  
+
   public function store()
   {
     // save form
@@ -230,7 +230,12 @@ Next table show conformity between request path and controller methods:
 |PUT	|/photo/:photo			|update	|ControllerPhoto::update
 |DELETE	|/photo/:photo			|destroy|ControllerPhoto::destroy
 Note, that if requested method undefined or is not public, Beacon return fallback function
+
 ##Options
+All methods `on`,`controller`,`group`,`domain`,`resource` have
+last argument named `$options`
+
+##Secure
 
 ##Middleware
 
