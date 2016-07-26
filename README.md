@@ -63,7 +63,8 @@ $route->getMiddleware();
 ###Methods
 Complete list of avail route methods
 ```PHP
-/* $path - request path, example /users
+/*
+ * $path - request path, example /users
  * $call - Controller::action or Closure
  * $options - array of options
  * $methods - array of http methods, example ['post','put']
@@ -117,35 +118,35 @@ for retrieve params use ```$route->getParams()```
 If request cannot be resolved, you can define fallback.
 ```PHP
 $router
-	->otherwise(function(){
-		switch(Beacon\RouterError::getErrorCode()){
-			case Beacon\RouterError::NO_ERROR:
-			/* All fine, only for example, never exists in otherwise block */
-			break;
+  ->otherwise(function(){
+    switch(Beacon\RouterError::getErrorCode()){
+      case Beacon\RouterError::NO_ERROR:
+      /* All fine, only for example, never exists in otherwise block */
+      break;
 
-			case Beacon\RouterError::NOT_FOUND_ERROR:
-  			/* Same as 404 error, cannot find any
-  			path for current request */
-  			break;
+      case Beacon\RouterError::NOT_FOUND_ERROR:
+      /* Same as 404 error, cannot find any
+      path for current request */
+      break;
 
-			case Beacon\RouterError::SECURE_ERROR:
-			/* Need secured connection over https */
-			break;
+      case Beacon\RouterError::SECURE_ERROR:
+      /* Need secured connection over https */
+      break;
 
-			case Beacon\RouterError::CONTROLLER_RESOLVE_ERROR:
-			/* When given method in binded contoller is unavailable */
-			break;
+      case Beacon\RouterError::CONTROLLER_RESOLVE_ERROR:
+      /* When given method in binded contoller is unavailable */
+      break;
 
-			case Beacon\RouterError::WHERE_REGEX_ERROR:
-			/* Fail parameter regex test in ->where(...) */
-			break;
+      case Beacon\RouterError::WHERE_REGEX_ERROR:
+      /* Fail parameter regex test in ->where(...) */
+      break;
 
-			case Beacon\RouterError::REST_RESOLVE_ERROR:
-			/* Cannot find implemented method
-			in given REST controller*/
-			break;
-      	}
-	});
+      case Beacon\RouterError::REST_RESOLVE_ERROR:
+      /* Cannot find implemented method
+      in given REST controller*/
+      break;
+    }
+  });
 ```
 ###Controller
 You can define controller namespace and bind methods to path:
