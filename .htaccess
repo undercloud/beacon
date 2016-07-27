@@ -1,10 +1,4 @@
 RewriteEngine On
-AddDefaultCharset UTF-8
 RewriteCond   %{REQUEST_FILENAME}       !-d
 RewriteCond   %{REQUEST_FILENAME}       !-f
 RewriteRule   ^(.*) index.php?%{QUERY_STRING}
-
-#php_flag engine On
-#php_value post_max_size 10M
-#php_value upload_max_filesize 9M
-#php_value max_file_uploads 1
