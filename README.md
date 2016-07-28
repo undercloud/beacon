@@ -7,19 +7,24 @@
 - Domain condition support
 - HTTPS condition support
 - Controller bindings
-- RESTfull
+- RESTful
 
 ##Requirements
 PHP 5.4+
+
 ##Install
 by composer
-```JSON
-{
-    "require": {
-        "undercloud/beacon": ">=1.5"
-    }
-}
+`composer require undercloud/beacon`
+
+##.htaccess
+Pretty URLs with .htaccess:
 ```
+RewriteEngine On
+RewriteCond   %{REQUEST_FILENAME}       !-d
+RewriteCond   %{REQUEST_FILENAME}       !-f
+RewriteRule   ^(.*) index.php?%{QUERY_STRING}
+```
+
 ##Setup
 ```PHP
 // if installed by composer
@@ -36,21 +41,29 @@ $router = new Beacon\Router(
   'isSecured' => true
 );
 ```
+
 ##Define routes
-Simple example:
+Here's a basic usage example:
 ```PHP
 $router
+  // any of methods get,post,put or delete
   ->on('/', 'Controller::index')
+  // only get method
   ->get('/user/:id', 'ControllerUser::getUser')
+  // only post
   ->post('/user/:id', function () { ... })
   ->put('/user/:id', function () { ... })
   ->delete('/user/:id(/:nickname)', 'ControllerUser::remove')
+  // fallback function
   ->otherwise(function() {
     echo 404;
   });
 
-// return Beacon\Route object with next methods:
+// resolve request
 $route = $router->go($path);
+```
+
+```PHP
 // return route path
 $route->getPath();
 // get callback
@@ -60,12 +73,13 @@ $route->getParams();
 // get middlewares list
 $route->getMiddleware();
 ```
+
 ###Methods
 Complete list of avail route methods
 ```PHP
 /*
- * $path - request path, example /users
- * $call - Controller::action or Closure
+ * $path - request path, example /users, support PCRE
+ * $call - callback, string 'Controller::action' or Closure
  * $options - array of options
  * $methods - array of http methods, example ['post','put']
  */
@@ -77,9 +91,10 @@ $router->put($path, $call [, $options]);
 $router->delete($path, $call [, $options]);
 $router->match(array $methods, $path, $call [, $options]);
 ```
+
 ###Params
 Beacon supports named params.
-For example route with binded params:
+For example, route with binded params:
 ```PHP
 $router->on('/user/:id/:name(/:nickname)', 'ControllerUser::getUser');
 ```
@@ -113,7 +128,8 @@ Now params will be fetched into:
   'nickname' => 'Guest'
 ]
 ```
-for retrieve params use ```$route->getParams()```
+for retrieve params use `$route->getParams()`
+
 ###Otherwise
 If request cannot be resolved, you can define fallback.
 ```PHP
@@ -125,8 +141,7 @@ $router
       break;
 
       case Beacon\RouterError::NOT_FOUND_ERROR:
-      /* Same as 404 error, cannot find any
-      path for current request */
+      /* Same as 404 error, cannot find any path for current request */
       break;
 
       case Beacon\RouterError::SECURE_ERROR:
@@ -142,22 +157,24 @@ $router
       break;
 
       case Beacon\RouterError::REST_RESOLVE_ERROR:
-      /* Cannot find implemented method
-      in given REST controller*/
+      /* Cannot find implemented method in given REST controller*/
       break;
     }
   });
 ```
+
 ###Controller
 You can define controller namespace and bind methods to path:
 ```PHP
+// bind path to controller
 $router->controller('/users', 'ControllerUsers');
-
+// resolve
 $route = $router->go('/users/get-users');
 // will return ControllerUsers::getUsers
 $call = $route->getCallback();
 ```
-if requested method undefined or is not public, Beacon return fallback function
+if requested method undefined or is not public, Beacon return fallback function.
+
 ###Group
 Routes can be grouped:
 ```PHP
@@ -176,6 +193,7 @@ $router->group('/api', function ($router) {
   });
 });
 ```
+
 ###Domain
 If your app can de accessed from  multiple hostnames, you can setup personal routes:
 ```PHP
@@ -233,11 +251,32 @@ Next table show conformity between request path and controller methods:
 Note, that if requested method undefined or is not public, Beacon return fallback function
 
 ##Options
-All methods `on`,`controller`,`group`,`domain`,`resource` have
+All methods: `on`,`controller`,`group`,`domain`,`resource` have
 last argument named `$options`
+...
+
+For defining global options use `Beacon\Router::globals(array $options)`
+```PHP
+$router
+  ->globals({
+    'secure' => true,
+    'middleware' => ['MiddlewareAuth']
+  })
+  // inherit global options
+  ->get('/', 'Controller::index')
+  // override global
+  ->post('/users', 'ControllerUsers::getUsers', [
+    'secure' => false
+  ])
+```
 
 ##Secure
-
+You can add option `secure`
+```PHP
+->on('/users', 'ControllerUsers', [
+  'secure' => true
+]);
+```
 ##Middleware
 
 ##Xml
