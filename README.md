@@ -13,7 +13,6 @@
 PHP 5.4+
 
 ##Install
-by composer
 `composer require undercloud/beacon`
 
 ##.htaccess
