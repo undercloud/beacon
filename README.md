@@ -318,7 +318,7 @@ $router
 ```
 
 ##Middleware chain
-Bacon makes it easy to manage the chain of middlewares, look at this example:
+Beacon makes it easy to manage the chain of middlewares, look at this example:
 ```PHP
 $router
   ->globals([
