@@ -286,7 +286,9 @@ $router->group('/api', function ($router) {
   'middleware' => ['MiddlewareAuth','MiddlewareCompressor']
 ]);
 ```
+
 You can override inherited, just define personal:
+```PHP
 $router->group('/api', function ($router) {
   // now in inherit options defined in group
   $router->get('/users/:id', function() {...}, [
