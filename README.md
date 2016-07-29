@@ -315,6 +315,7 @@ $router
 ```
 ##Middleware chain
 Bacon makes it easy to manage the chain of middlewares, look at this example:
+```PHP
 $router
   ->globals([
     'middleware' => ['MiddlewareAuth']
