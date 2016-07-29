@@ -8,11 +8,12 @@
 - HTTPS condition support
 - Controller bindings
 - RESTful
+- Unicode
 
 ##Requirements
 PHP 5.4+
 
-##Install
+##Installation
 `composer require undercloud/beacon`
 
 ##.htaccess
@@ -51,16 +52,16 @@ $router
   ->get('/user/:id', 'ControllerUser::getUser')
   // only post
   ->post('/user/:id', function () { ... })
-  ->put('/user/:id', function () { ... })
-  ->delete('/user/:id(/:nickname)', 'ControllerUser::remove')
   // fallback function
   ->otherwise(function() {
     echo 404;
   });
 
 // resolve request
-$route = $router->go($path);
+$route = $router->go($_SERVER['REQUEST_URI']);
 ```
+
+`Beacon\Router::go` method return `Beacon\Route` instance with next methods:
 
 ```PHP
 // return route path
@@ -71,6 +72,12 @@ $route->getCallback();
 $route->getParams();
 // get middlewares list
 $route->getMiddleware();
+```
+
+###Unicode paths
+Route paths can contain any Unicode character set
+```PHP
+$router->on('/gâteau-français', function () { ... })
 ```
 
 ###Methods
@@ -219,19 +226,22 @@ and define controller with specific methods:
 ```PHP
 class ControllerPhoto
 {
+  // build list
   public function index()
   {
-    // build list
+    ...
   }
 
+  // build form
   public function create()
   {
-    // build form
+    ...
   }
 
+  // save form
   public function store()
   {
-    // save form
+    ...
   }
   ...
 }

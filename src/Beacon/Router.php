@@ -65,12 +65,13 @@ class Router
 		}
 
 		$path = $this->helper->normalize($path);
-
-		$path   = implode($this->groups) . $path;
-		$params = $this->helper->extractPlaceholder($path);
-		$path   = $this->helper->compile($path);
+		$path = implode($this->groups) . $path;
 
 		$route = new Route;
+
+		$route->setOrigin($path);
+
+		$path = $this->helper->compile($path);
 
 		$prefix = null;
 		if ($this->domain) {
@@ -80,13 +81,11 @@ class Router
 
 		$key = null;
 		if ($path) {
-			$path = $this->helper->normalize($path);
 		    $key = $prefix . $path;
 		}
 
 		$route->setPath($path);
 		$route->setCallback($call);
-		$route->setParams($params);
 		$route->setOptions($options);
 
 		if ($this->controller) {
@@ -238,9 +237,15 @@ class Router
 
 	public function go($uri)
 	{
+		if (false !== ($pos = strpos($uri, '?'))) {
+			$uri = substr($uri, 0, $pos);
+		}
+
+		$uri = rawurldecode($uri);
+		$uri = $this->helper->normalize($uri);
+
 		krsort($this->routes);
 
-		$uri = $this->helper->normalize($uri);
 		foreach ($this->routes as $route) {
 			if (!$this->matcher->checkPath($route, $uri)) {
 				continue;

@@ -7,6 +7,7 @@ use Beacon\Helper;
 class Route
 {
 	private $path;
+	private $origin;
 	private $domain;
 	private $callback;
 	private $method = [];

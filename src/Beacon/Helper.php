@@ -64,7 +64,8 @@ class Helper
 
 	public static function fetchPlaceholder(Route $route, $path)
 	{
-		$params = $route->getParams();
+		$origin = $route->getOrigin();
+		$params = self::extractPlaceholder($origin);
 		$segments = explode('/', $path);
 
 		foreach ($params as $name => $index) {
