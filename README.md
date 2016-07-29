@@ -301,9 +301,8 @@ $router->group('/api', function ($router) {
   'secure' => true,
   'middleware' => ['MiddlewareAuth','MiddlewareCompressor']
 ]);
-
+```
 For defining global pre-setuped options use `Beacon\Router::globals(array $options)`.
-
 ```PHP
 $router
   ->globals({
