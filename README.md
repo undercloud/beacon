@@ -262,6 +262,7 @@ Note, that if requested method undefined or is not public, Beacon return fallbac
 
 ##Route options
 All methods:
+
 * on
 * get
 * post
@@ -272,7 +273,9 @@ All methods:
 * group
 * domain
 * resource
+
 have last argument named `$options`, now it support next params:
+
 * secure - secure flag
 * middleware - hold middleware chain
 
