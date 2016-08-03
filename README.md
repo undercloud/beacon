@@ -1,5 +1,6 @@
 #Beacon - PHP Routing System
 [![Build Status](https://travis-ci.org/undercloud/beacon.svg?branch=master)](https://travis-ci.org/undercloud/beacon)
+[![Coverage Status](https://coveralls.io/repos/github/undercloud/beacon/badge.svg?branch=master)](https://coveralls.io/github/undercloud/beacon?branch=master)
 
 ##Features
 - Zero dependency
