@@ -76,6 +76,14 @@ class Helper
 			}
 		}
 
+		$wildcard = $route->getWildcard();
+		if (null !== $wildcard) {
+			$slice = substr($path, strlen($route->getPath()));
+			$slice = array_values(array_filter(explode('/', $slice)));
+
+			$params[$wildcard] = $slice;
+		}
+
 		$route->setParams($params);
 	}
 

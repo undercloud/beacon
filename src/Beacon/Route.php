@@ -17,6 +17,7 @@ class Route
 	private $rest = false;
 	private $secure = false;
 	private $controller = false;
+	private $wildcard;
 
 	public function __call($method, $args)
 	{

@@ -228,6 +228,13 @@ class Router
 		return $this;
 	}
 
+	public function wildcard($name)
+	{
+		$this->lastRoute->setWildcard($name);
+
+		return $this;
+	}
+
 	public function loadFromXml($path)
 	{
 		(new XmlParser($this))->parse($path);

@@ -9,6 +9,7 @@ class RouteError
 	const CONTROLLER_RESOLVE_ERROR = 4;
 	const WHERE_REGEX_ERROR        = 8;
 	const REST_RESOLVE_ERROR       = 16;
+	const AUTH_ERROR               = 32;
 
 	protected static $code = 0;
 

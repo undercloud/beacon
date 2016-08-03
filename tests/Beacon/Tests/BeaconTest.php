@@ -123,7 +123,8 @@ class BeaconTest extends PHPUnit_Framework_TestCase
 
 	public function testMiddleware()
 	{
-		$this->router
+		$this
+			->router
 			->globals([
 				'middleware' => ['A']
 			])
@@ -139,6 +140,34 @@ class BeaconTest extends PHPUnit_Framework_TestCase
 		$this->assertEquals(['E'], $this->router->go('/api/user')->getMiddleware());
 		$this->assertEquals(['D'], $this->router->go('/api/article')->getMiddleware());
 		$this->assertEquals(['A','F'], $this->router->go('/404')->getMiddleware());
+	}
+
+	public function testWildcard()
+	{
+		$this
+			->router
+			->on('/foo', null)
+				->wildcard('bat');
+
+		$this->assertEquals(
+			['bat' => ['bar','baz','quux']],
+			$this->router->go('/foo/bar/baz/quux')->getParams()
+		);
+
+		$this->assertEquals(
+			['bat' => ['bar','baz']],
+			$this->router->go('/foo/bar/baz/')->getParams()
+		);
+
+		$this->assertEquals(
+			['bat' => ['bar']],
+			$this->router->go('/foo/bar')->getParams()
+		);
+
+		$this->assertEquals(
+			['bat' => []],
+			$this->router->go('/foo/')->getParams()
+		);
 	}
 }
 

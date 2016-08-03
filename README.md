@@ -14,7 +14,6 @@
 - Wildcard attributes
 
 ##ToDO
-* wildcard
 * auth
 
 ##Requirements
