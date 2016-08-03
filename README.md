@@ -10,6 +10,7 @@
 - Controller bindings
 - RESTful
 - Unicode
+- Wildcard attributes
 
 ##Requirements
 PHP 5.4+
@@ -136,6 +137,23 @@ Now params will be fetched into:
 ]
 ```
 for retrieve params use `$route->getParams()`
+
+###Wildcard Attributes
+Sometimes it is useful to allow the trailing part of the path be anything at all.
+To allow arbitrary trailing path segments on a route, call the wildcard() method.
+This will let you specify the attribute name under which the arbitrary trailing
+values will be stored.
+
+```PHP
+$router
+  ->on('/foo', function() { ... })
+    ->wildcard('card')
+
+$route = $router->go('/foo/bar/baz/quux');
+
+// ['foo' => ['bar','baz','quux']]
+$params = $route->getParams();
+```
 
 ###Otherwise
 If request cannot be resolved, you can define fallback:
