@@ -11,6 +11,10 @@
 - RESTful
 - Unicode
 
+##ToDO
+* wildcard
+* auth
+
 ##Requirements
 PHP 5.4+
 
