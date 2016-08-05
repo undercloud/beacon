@@ -156,6 +156,22 @@ class Router
 		return $this;
 	}
 
+	public function patch($path, $call, array $options = [])
+	{
+		$options['method'] = ['patch'];
+		$this->bind($path, $call, $options);
+
+		return $this;
+	}
+
+	public function head($path, $call, array $options = [])
+	{
+		$options['method'] = ['head'];
+		$this->bind($path, $call, $options);
+
+		return $this;
+	}
+
 	public function otherwise($call, array $options = [])
 	{
 		$options = $this->processOptions($options);

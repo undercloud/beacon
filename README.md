@@ -101,6 +101,8 @@ $router->get($path, $call [, $options]);
 $router->post($path, $call [, $options]);
 $router->put($path, $call [, $options]);
 $router->delete($path, $call [, $options]);
+$router->patch($path, $call [, $options]);
+$router->head($path, $call [, $options]);
 $router->match(array $methods, $path, $call [, $options]);
 ```
 
@@ -290,6 +292,8 @@ All methods:
 * post
 * put
 * delete
+* patch
+* head
 * match
 * controller
 * group
