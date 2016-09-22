@@ -157,7 +157,7 @@ $router
 
 $route = $router->go('/foo/bar/baz/quux');
 
-// ['foo' => ['bar','baz','quux']]
+// ['card' => ['bar','baz','quux']]
 $params = $route->getParams();
 ```
 
