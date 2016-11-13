@@ -23,4 +23,3 @@ class RouteError
 		return static::$code;
 	}
 }
-?>

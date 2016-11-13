@@ -1,7 +1,6 @@
 <?php
 namespace Beacon;
 
-use Beacon\Route;
 use ReflectionClass;
 use ReflectionException;
 
@@ -98,4 +97,3 @@ class Matcher
 		return true;
 	}
 }
-?>

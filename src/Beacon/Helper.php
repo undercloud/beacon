@@ -1,147 +1,150 @@
 <?php
 namespace Beacon;
 
-use Beacon\Route;
-
 class Helper
 {
-	public function noop()
-	{
-		return function () {};
-	}
+    public function noop()
+    {
+        return function () {};
+    }
 
-	public static function arrayify($what)
-	{
-		if (!is_array($what)) {
-			$what = [$what];
-		}
+    public static function arrayify($what)
+    {
+        if (!is_array($what)) {
+            $what = [$what];
+        }
 
-		return $what;
-	}
+        return $what;
+    }
 
-	public static function normalize($path)
-	{
-		if ('/' === $path) return $path;
+    public static function normalize($path)
+    {
+        if ('/' === $path) return $path;
 
-		return rtrim($path, '/');
-	}
+        return rtrim($path, '/');
+    }
 
-	public static function compile($path)
-	{
-		$regexp = '~\(?\/:[\w\)]*~';
+    public static function compile($path)
+    {
+        $regexp = '~\(?\/:[\w\)]*~';
 
-		$compiler = function ($e) {
-			$param = $e[0];
-			$compiled = '/[\w]+';
+        $compiler = function ($e) {
+            $param = $e[0];
+            $compiled = '/[\w]+';
 
-			if ($param[0] === '(' and substr($param, -1) === ')') {
-				$compiled = '(' . $compiled . ')?';
-			}
+            if ($param[0] === '(' and substr($param, -1) === ')') {
+                $compiled = '(' . $compiled . ')?';
+            }
 
-			return $compiled;
+            return $compiled;
 
-		};
+        };
 
-		return preg_replace_callback($regexp, $compiler, $path);
-	}
+        return preg_replace_callback($regexp, $compiler, $path);
+    }
 
-	public static function extractPlaceholder($path)
-	{
-		$segments = explode('/', $path);
+    public static function extractPlaceholder($path)
+    {
+        $segments = explode('/', $path);
 
-		$segments = array_filter($segments, function ($item) {
-			return (isset($item[0]) and $item[0] === ':');
-		});
+        $segments = array_filter($segments, function ($item) {
+            return (isset($item[0]) and $item[0] === ':');
+        });
 
-		$segments = array_map(function ($item) {
-			return preg_replace('~\W~', '', $item);
-		}, $segments);
+        $segments = array_map(function ($item) {
+            return preg_replace('~\W~', '', $item);
+        }, $segments);
 
-		$segments = array_flip($segments);
+        $segments = array_flip($segments);
 
-		return $segments;
-	}
+        return $segments;
+    }
 
-	public static function fetchPlaceholder(Route $route, $path)
-	{
-		$origin = $route->getOrigin();
-		$params = self::extractPlaceholder($origin);
-		$segments = explode('/', $path);
+    public static function fetchPlaceholder(Route $route, $path)
+    {
+        $origin = $route->getOrigin();
+        $params = self::extractPlaceholder($origin);
+        $segments = explode('/', $path);
 
-		foreach ($params as $name => $index) {
-			if (isset($segments[$index])) {
-				$params[$name] = $segments[$index];
-			} else {
-				$params[$name] = null;
-			}
-		}
+        $numeric = (
+            $params
+            ? array_slice($segments, (integer)min($params))
+            : []
+        );
 
-		$wildcard = $route->getWildcard();
-		if (null !== $wildcard) {
-			$slice = substr($path, strlen($route->getPath()));
-			$slice = array_values(array_filter(explode('/', $slice)));
+        foreach ($params as $name => $index) {
+            if (isset($segments[$index])) {
+                $params[$name] = $segments[$index];
+            } else {
+                $params[$name] = null;
+            }
+        }
 
-			$params[$wildcard] = $slice;
-		}
+        $wildcard = $route->getWildcard();
+        if (null !== $wildcard) {
+            $slice = substr($path, strlen($route->getPath()));
+            $slice = array_values(array_filter(explode('/', $slice)));
 
-		$route->setParams($params);
-	}
+            $params[$wildcard] = $slice;
+        }
 
-	public static function processOptions(array $options)
-	{
-		$formatted = array();
-		foreach ($options as $option) {
-			foreach ($option as $key => $value) {
-				switch ($key) {
-					case 'secure':
-					case 'where':
-						$formatted[$key] = $value;
-					break;
+        $route->setParams($params + $numeric);
+    }
 
-					case 'method':
-					case 'middleware':
-						if (!isset($formatted[$key])) {
-							$formatted[$key] = array();
-						}
+    public static function processOptions(array $options)
+    {
+        $formatted = array();
+        foreach ($options as $option) {
+            foreach ($option as $key => $value) {
+                switch ($key) {
+                    case 'secure':
+                    case 'where':
+                        $formatted[$key] = $value;
+                    break;
 
-						$value = static::arrayify($value);
+                    case 'method':
+                    case 'middleware':
+                        if (!isset($formatted[$key])) {
+                            $formatted[$key] = array();
+                        }
 
-						list($corns, $darnels) = call_user_func(function ($array) {
-							$ok   = array();
-							$fail = array();
+                        $value = static::arrayify($value);
 
-							foreach ($array as $key => $value) {
-								if (false !== strpos($value, ':')) {
-									$ok[$key] = $value;
-								} else {
-									$fail[$key] = $value;
-								}
-							}
+                        list($corns, $darnels) = call_user_func(function ($array) {
+                            $ok   = array();
+                            $fail = array();
 
-							return array($ok, $fail);
-						}, $value);
+                            foreach ($array as $key => $value) {
+                                if (false !== strpos($value, ':')) {
+                                    $ok[$key] = $value;
+                                } else {
+                                    $fail[$key] = $value;
+                                }
+                            }
 
-						if ($darnels) {
-							$formatted[$key] = $darnels;
-						} else {
-							foreach ($corns as $corn) {
-								list($op, $item) = explode(':', $corn, 2);
+                            return array($ok, $fail);
+                        }, $value);
 
-								if ($op === 'add') {
-									$formatted[$key][] = $item;
-								} else if ($op === 'del') {
-									$formatted[$key] = array_diff($formatted[$key], array($item));
-								}
-							}
-						}
+                        if ($darnels) {
+                            $formatted[$key] = $darnels;
+                        } else {
+                            foreach ($corns as $corn) {
+                                list($op, $item) = explode(':', $corn, 2);
 
-						$formatted[$key] = array_values($formatted[$key]);
-					break;
-				}
-			}
-		}
+                                if ($op === 'add') {
+                                    $formatted[$key][] = $item;
+                                } else if ($op === 'del') {
+                                    $formatted[$key] = array_diff($formatted[$key], array($item));
+                                }
+                            }
+                        }
 
-		return $formatted;
-	}
+                        $formatted[$key] = array_values($formatted[$key]);
+                    break;
+                }
+            }
+        }
+
+        return $formatted;
+    }
 }
-?>

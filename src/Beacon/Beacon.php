@@ -7,4 +7,3 @@ require_once __DIR__ . '/RouteException.php';
 require_once __DIR__ . '/RouteError.php';
 require_once __DIR__ . '/XmlParser.php';
 require_once __DIR__ . '/ClosureQueue.php';
-?>

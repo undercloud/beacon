@@ -38,14 +38,14 @@ require '/path/to/vendor/autoload.php';
 // if installed manually
 require '/path/to/Beacon/Beacon.php';
 
-$router = new Beacon\Router(
+$router = new Beacon\Router([
   // current hostname
-  'host'   => $_SERVER['SERVER_NAME'],
+  'host' => $_SERVER['SERVER_NAME'],
   // current http method
   'method' => $_SERVER['REQUEST_METHOD'],
   // optionaly, true if request over https
   'isSecured' => true
-);
+]);
 ```
 
 ##Define routes
@@ -331,10 +331,10 @@ $router->group('/api', function ($router) {
 For defining global pre-setuped options use `Beacon\Router::globals(array $options)`.
 ```PHP
 $router
-  ->globals({
+  ->globals([
     'secure' => true,
     'middleware' => ['MiddlewareAuth']
-  })
+  ])
   // inherit global options
   ->get('/', 'Controller::index')
   // override global

@@ -2,7 +2,6 @@
 namespace Beacon;
 
 use Exception;
-use Beacon\Helper;
 
 class Route
 {
@@ -63,4 +62,3 @@ class Route
 		$this->where[$param] = $where;
 	}
 }
-?>
