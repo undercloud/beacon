@@ -137,8 +137,9 @@ class Helper
         foreach ($options as $option) {
             foreach ($option as $key => $value) {
                 switch ($key) {
-                    case 'secure':
+                    case 'auth':
                     case 'where':
+                    case 'secure':
                         $formatted[$key] = $value;
                     break;
 
