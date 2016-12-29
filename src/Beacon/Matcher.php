@@ -166,4 +166,22 @@ class Matcher
 
 		return true;
 	}
+    
+    /**
+     * Check auth
+     *
+     * @param Route $route instance
+     *
+     * @return bool
+     */
+    public function checkAuth(Route $route)
+    {
+        $auth = $route->getAuth();
+        
+        if(null === $auth) {
+            return true;   
+        }
+        
+        return (bool) call_user_func($auth, $route);
+    }
 }
