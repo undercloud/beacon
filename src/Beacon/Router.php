@@ -418,7 +418,7 @@ class Router
                 return $this->fallbackRoute;
             }
 
-            if (!$this->helper->checkAuth($route)) {
+            if (!$this->matcher->checkAuth($route)) {
                 RouteError::setErrorCode(RouteError::AUTH_ERROR);
                 
                 return $this->fallbackRoute;
