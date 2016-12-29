@@ -336,6 +336,20 @@ class Router
 
         return $this;
     }
+    
+    /**
+     * Set auth checker
+     *
+     * @param callable $call resolver
+     *
+     * @return self
+     */
+    public function auth(callable $call)
+    {
+        $this->lastRoute->setAuth($call);
+        
+        return $this;
+    }
 
     /**
      * Load XML routes
@@ -404,6 +418,12 @@ class Router
                 return $this->fallbackRoute;
             }
 
+            if (!$this->helper->checkAuth($route)) {
+                RouteError::setErrorCode(RouteError::AUTH_ERROR);
+                
+                return $this->fallbackRoute;
+            }
+            
             return $route;
         }
 
