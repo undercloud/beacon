@@ -75,6 +75,10 @@ class Route
     private $wildcard;
 
     /**
+     * @var callable
+     */
+    private $auth;
+    /**
      * Magic __call
      *
      * @param string $method name
