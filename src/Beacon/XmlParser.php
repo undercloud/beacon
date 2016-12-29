@@ -1,17 +1,41 @@
 <?php
 namespace Beacon;
+/**
+ * XML route parser
+ *
+ * @category Router
+ * @package  Beacon
+ * @author   undercloud <lodashes@gmail.com>
+ * @license  https://opensource.org/licenses/MIT MIT
+ * @link     http://github.com/undercloud/beacon
+ */
 
 use SimpleXMLElement;
 
 class XmlParser
 {
+    /**
+     * @var Router
+     */
     private $router;
 
+    /**
+     * Initialize
+     *
+     * @param Router|null $router instance
+     */
     public function __construct(Router $router = null)
     {
         $this->router = $router;
     }
 
+    /**
+     * Parse options section
+     *
+     * @param SimpleXMLElement $node instance
+     *
+     * @return array
+     */
     public function parseOptions(SimpleXMLElement $node)
     {
         if (!$node->count()) return [];
@@ -58,6 +82,13 @@ class XmlParser
         return $options;
     }
 
+    /**
+     * Parse route
+     *
+     * @param SimpleXMLElement $node instance
+     *
+     * @return Closure
+     */
     public function parseRoute(SimpleXMLElement $node)
     {
         $method = $node->getName();
@@ -80,6 +111,14 @@ class XmlParser
         );
     }
 
+    /**
+     * Parse group section
+     *
+     * @param  SimpleXMLElement $group  instance
+     * @param  boolean          $domain flag
+     *
+     * @return Closure
+     */
     public function parseGroup(SimpleXMLElement $group, $domain = false)
     {
         $method = 'group';
@@ -109,6 +148,13 @@ class XmlParser
         );
     }
 
+    /**
+     * Parse domain section
+     *
+     * @param SimpleXMLElement $domain instance
+     *
+     * @return Closure
+     */
     public function parseDomain(SimpleXMLElement $domain)
     {
         $method = 'domain';
@@ -125,6 +171,13 @@ class XmlParser
         );
     }
 
+    /**
+     * Parse xml routes
+     *
+     * @param string $path to xml routes file
+     *
+     * @return null
+     */
     public function parse($path)
     {
         libxml_clear_errors();

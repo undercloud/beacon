@@ -1,27 +1,89 @@
 <?php
 namespace Beacon;
+/**
+ * Router
+ *
+ * @category Router
+ * @package  Beacon
+ * @author   undercloud <lodashes@gmail.com>
+ * @license  https://opensource.org/licenses/MIT MIT
+ * @link     http://github.com/undercloud/beacon
+ */
 
 use Closure;
 
 class Router
 {
+    /**
+     * @var string
+     */
     private $host;
+
+    /**
+     * @var string
+     */
     private $method;
+
+    /**
+     * @var bool
+     */
     private $isSecured = false;
 
+    /**
+     * @var string
+     */
     private $domain;
+
+    /**
+     * @var array
+     */
     private $groups = [];
+
+    /**
+     * @var array
+     */
     private $options = [];
+
+    /**
+     * @var bool
+     */
     private $rest = false;
+
+    /**
+     * @var bool
+     */
     private $controller = false;
 
+    /**
+     * @var array
+     */
     private $routes = [];
+
+    /**
+     * @var Route
+     */
     private $lastRoute;
+
+    /**
+     * @var callable
+     */
     private $fallbackRoute;
 
+    /**
+     * @var Helper
+     */
     private $helper;
+
+    /**
+     * @var Matcher
+     */
     private $matcher;
 
+    /**
+     * Initialize
+     *
+     * @param array $options pre setup
+     */
     public function __construct(array $options = [])
     {
         if (isset($options['host']))      $this->host   = $options['host'];
@@ -35,6 +97,13 @@ class Router
         $this->fallbackRoute->setCallback($this->helper->noop());
     }
 
+    /**
+     * Process options section
+     *
+     * @param array $options list
+     *
+     * @return array
+     */
     private function processOptions(array $options)
     {
         $this->options[] = $options;
@@ -44,6 +113,13 @@ class Router
         return $options;
     }
 
+    /**
+     * Setup global values
+     *
+     * @param array $options list
+     *
+     * @return self
+     */
     public function globals(array $options)
     {
         $this->options = [$options];
@@ -167,6 +243,14 @@ class Router
         return $this;
     }
 
+    /**
+     * Fallback handler
+     *
+     * @param  mixed $call    callback
+     * @param  array $options route
+     *
+     * @return self
+     */
     public function otherwise($call, array $options = [])
     {
         $options = $this->processOptions($options);
@@ -239,6 +323,13 @@ class Router
         return $this;
     }
 
+    /**
+     * Set wildcard
+     *
+     * @param string $name value
+     *
+     * @return self
+     */
     public function wildcard($name)
     {
         $this->lastRoute->setWildcard($name);
@@ -246,6 +337,13 @@ class Router
         return $this;
     }
 
+    /**
+     * Load XML routes
+     *
+     * @param  string $path to xml routes
+     *
+     * @return self
+     */
     public function loadFromXml($path)
     {
         (new XmlParser($this))->parse($path);
@@ -253,6 +351,13 @@ class Router
         return $this;
     }
 
+    /**
+     * Route resolver
+     *
+     * @param  string $uri request uri
+     *
+     * @return Beacon\Route
+     */
     public function go($uri)
     {
         if (false !== ($pos = strpos($uri, '?'))) {

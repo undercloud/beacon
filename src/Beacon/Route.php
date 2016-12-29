@@ -3,62 +3,142 @@ namespace Beacon;
 
 use Exception;
 
+/**
+ * Route
+ *
+ * @category Router
+ * @package  Beacon
+ * @author   undercloud <lodashes@gmail.com>
+ * @license  https://opensource.org/licenses/MIT MIT
+ * @link     http://github.com/undercloud/beacon
+ */
 class Route
 {
-	private $path;
-	private $origin;
-	private $domain;
-	private $callback;
-	private $method = [];
-	private $where = [];
-	private $params = [];
-	private $middleware = [];
-	private $rest = false;
-	private $secure = false;
-	private $controller = false;
-	private $wildcard;
+    /**
+     * @var string
+     */
+    private $path;
 
-	public function __call($method, $args)
-	{
-		$prefix   = substr($method, 0, 3);
-		$property = strtolower(substr($method, 3));
+    /**
+     * @var string
+     */
+    private $origin;
 
-		if (!property_exists($this, $property)) {
-			throw new Exception(
-				sprintf('Property %s is not defined in %s', $property,  __CLASS__)
-			);
-		}
+    /**
+     * @var string
+     */
+    private $domain;
 
-		if ('set' === $prefix) {
-			return $this->{$property} = reset($args);
-		} else if ('get' === $prefix) {
-			return $this->{$property};
-		}
+    /**
+     * @var callable
+     */
+    private $callback;
 
-		throw new Exception(
-			sprintf('Method %s is not defined in %s', $method,  __CLASS__)
-		);
-	}
+    /**
+     * @var array
+     */
+    private $method = [];
 
-	public function setOptions(array $options)
-	{
-		$keys = ['secure','method','middleware','where'];
+    /**
+     * @var array
+     */
+    private $where = [];
 
-		foreach ($options as $key => $value) {
-			if (in_array($key, $keys)) {
-				$this->{$key} = $value;
-			}
-		}
-	}
+    /**
+     * @var array
+     */
+    private $params = [];
 
-	public function where($param, $regexp, $default = null)
-	{
-		$where = ['regexp' => $regexp];
+    /**
+     * @var array
+     */
+    private $middleware = [];
 
-		if (isset(func_get_args()[2])) {
-			$where['default'] = $default;
-		}
+    /**
+     * @var boolean
+     */
+    private $rest = false;
 
-		$this->where[$param] = $where;
-	}
+    /**
+     * @var boolean
+     */
+    private $secure = false;
+
+    /**
+     * @var boolean
+     */
+    private $controller = false;
+
+    /**
+     * @var string
+     */
+    private $wildcard;
+
+    /**
+     * Magic __call
+     *
+     * @param string $method name
+     * @param array  $args   list
+     *
+     * @return mixed
+     */
+    public function __call($method, $args)
+    {
+        $prefix   = substr($method, 0, 3);
+        $property = strtolower(substr($method, 3));
+
+        if (!property_exists($this, $property)) {
+            throw new Exception(
+                sprintf('Property %s is not defined in %s', $property,  __CLASS__)
+            );
+        }
+
+        if ('set' === $prefix) {
+            return $this->{$property} = reset($args);
+        } else if ('get' === $prefix) {
+            return $this->{$property};
+        }
+
+        throw new Exception(
+            sprintf('Method %s is not defined in %s', $method,  __CLASS__)
+        );
+    }
+
+    /**
+     * Set options
+     *
+     * @param array $options list
+     *
+     * @return null
+     */
+    public function setOptions(array $options)
+    {
+        $keys = ['secure','method','middleware','where'];
+
+        foreach ($options as $key => $value) {
+            if (in_array($key, $keys)) {
+                $this->{$key} = $value;
+            }
+        }
+    }
+
+    /**
+     * Process where
+     *
+     * @param string $param   name
+     * @param string $regexp  expression
+     * @param string $default value
+     *
+     * @return null
+     */
+    public function where($param, $regexp, $default = null)
+    {
+        $where = ['regexp' => $regexp];
+
+        if (isset(func_get_args()[2])) {
+            $where['default'] = $default;
+        }
+
+        $this->where[$param] = $where;
+    }
 }

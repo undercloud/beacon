@@ -1,22 +1,33 @@
 <?php
 namespace Beacon;
-
+/**
+ * Helper
+ *
+ * @category Router
+ * @package  Beacon
+ * @author   undercloud <lodashes@gmail.com>
+ * @license  https://opensource.org/licenses/MIT MIT
+ * @link     http://github.com/undercloud/beacon
+ */
 class Helper
 {
+    /**
+     * Creare noop callback
+     *
+     * @return Closure
+     */
     public function noop()
     {
         return function () {};
     }
 
-    public static function arrayify($what)
-    {
-        if (!is_array($what)) {
-            $what = [$what];
-        }
-
-        return $what;
-    }
-
+    /**
+     * Normalize segment
+     *
+     * @param string $path segment
+     *
+     * @return string
+     */
     public static function normalize($path)
     {
         if ('/' === $path) return $path;
@@ -24,6 +35,13 @@ class Helper
         return rtrim($path, '/');
     }
 
+    /**
+     * Compile pattern
+     *
+     * @param string $path pattern
+     *
+     * @return string
+     */
     public static function compile($path)
     {
         $regexp = '~\(?\/:[\w\)]*~';
@@ -43,6 +61,13 @@ class Helper
         return preg_replace_callback($regexp, $compiler, $path);
     }
 
+    /**
+     * Extract placeholder segments
+     *
+     * @param string $path pattern
+     *
+     * @return array
+     */
     public static function extractPlaceholder($path)
     {
         $segments = explode('/', $path);
@@ -60,6 +85,14 @@ class Helper
         return $segments;
     }
 
+    /**
+     * Fetch flaceholder segments
+     *
+     * @param Route  $route instance
+     * @param string $path  pattern
+     *
+     * @return null
+     */
     public static function fetchPlaceholder(Route $route, $path)
     {
         $origin = $route->getOrigin();
@@ -91,6 +124,13 @@ class Helper
         $route->setParams($params + $numeric);
     }
 
+    /**
+     * Process options
+     *
+     * @param array $options list
+     *
+     * @return array
+     */
     public static function processOptions(array $options)
     {
         $formatted = array();
@@ -108,7 +148,7 @@ class Helper
                             $formatted[$key] = array();
                         }
 
-                        $value = static::arrayify($value);
+                        $value = (array) $value;
 
                         list($corns, $darnels) = call_user_func(function ($array) {
                             $ok   = array();
