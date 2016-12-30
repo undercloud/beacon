@@ -1,5 +1,8 @@
 <?php
 namespace Beacon;
+
+use Closure;
+
 /**
  * Router
  *
@@ -9,9 +12,6 @@ namespace Beacon;
  * @license  https://opensource.org/licenses/MIT MIT
  * @link     http://github.com/undercloud/beacon
  */
-
-use Closure;
-
 class Router
 {
     /**
@@ -86,9 +86,17 @@ class Router
      */
     public function __construct(array $options = [])
     {
-        if (isset($options['host']))      $this->host   = $options['host'];
-        if (isset($options['isSecured'])) $this->isSecured = $options['isSecured'];
-        if (isset($options['method']))    $this->method = strtolower($options['method']);
+        if (isset($options['host'])) {
+            $this->host   = $options['host'];
+        }
+
+        if (isset($options['isSecured'])) {
+            $this->isSecured = $options['isSecured'];
+        }
+
+        if (isset($options['method'])) {
+            $this->method = strtolower($options['method']);
+        }
 
         $this->matcher = new Matcher;
         $this->helper  = new Helper;
@@ -127,6 +135,15 @@ class Router
         return $this;
     }
 
+    /**
+     * Core request binder
+     *
+     * @param string   $path    value
+     * @param callable $call    callback
+     * @param array    $options list
+     *
+     * @return null
+     */
     private function bind($path, $call, array $options = [])
     {
         $options = $this->processOptions($options);
@@ -176,6 +193,15 @@ class Router
         $this->routes[$key] = $this->lastRoute = $route;
     }
 
+    /**
+     * Bind path
+     *
+     * @param string   $path    value
+     * @param callable $call    callback
+     * @param array    $options list
+     *
+     * @return self
+     */
     public function on($path, $call, array $options = [])
     {
         if (!isset($options['method'])) {
@@ -187,6 +213,16 @@ class Router
         return $this;
     }
 
+    /**
+     * Multiple request binder
+     *
+     * @param array    $method  list
+     * @param string   $path    value
+     * @param callable $call    callback
+     * @param array    $options list
+     *
+     * @return self
+     */
     public function match(array $method, $path, $call, array $options = [])
     {
         $options['method'] = $method;
@@ -195,6 +231,15 @@ class Router
         return $this;
     }
 
+    /**
+     * GET request
+     *
+     * @param string   $path    value
+     * @param callable $call    callback
+     * @param array    $options list
+     *
+     * @return self
+     */
     public function get($path, $call, array $options = [])
     {
         $options['method'] = ['get'];
@@ -203,6 +248,15 @@ class Router
         return $this;
     }
 
+    /**
+     * POST request
+     *
+     * @param string   $path    value
+     * @param callable $call    callback
+     * @param array    $options list
+     *
+     * @return self
+     */
     public function post($path, $call, array $options = [])
     {
         $options['method'] = ['post'];
@@ -211,6 +265,15 @@ class Router
         return $this;
     }
 
+    /**
+     * PUT request
+     *
+     * @param string   $path    value
+     * @param callable $call    callback
+     * @param array    $options list
+     *
+     * @return self
+     */
     public function put($path, $call, array $options = [])
     {
         $options['method'] = ['put'];
@@ -219,6 +282,15 @@ class Router
         return $this;
     }
 
+    /**
+     * DELETE request
+     *
+     * @param string   $path    value
+     * @param callable $call    callback
+     * @param array    $options list
+     *
+     * @return self
+     */
     public function delete($path, $call, array $options = [])
     {
         $options['method'] = ['delete'];
@@ -227,6 +299,15 @@ class Router
         return $this;
     }
 
+    /**
+     * PATCH request
+     *
+     * @param string   $path    value
+     * @param callable $call    callback
+     * @param array    $options list
+     *
+     * @return self
+     */
     public function patch($path, $call, array $options = [])
     {
         $options['method'] = ['patch'];
@@ -235,6 +316,15 @@ class Router
         return $this;
     }
 
+    /**
+     * HEAD request
+     *
+     * @param string   $path    value
+     * @param callable $call    callback
+     * @param array    $options list
+     *
+     * @return self
+     */
     public function head($path, $call, array $options = [])
     {
         $options['method'] = ['head'];
@@ -246,8 +336,8 @@ class Router
     /**
      * Fallback handler
      *
-     * @param  mixed $call    callback
-     * @param  array $options route
+     * @param mixed $call    callback
+     * @param array $options route
      *
      * @return self
      */
@@ -260,6 +350,15 @@ class Router
         return $this;
     }
 
+    /**
+     * Group routes
+     *
+     * @param string   $prefix  name
+     * @param callable $call    callback
+     * @param array    $options list
+     *
+     * @return self
+     */
     public function group($prefix, $call, array $options = [])
     {
         $this->groups[] = $prefix;
@@ -273,6 +372,15 @@ class Router
         return $this;
     }
 
+    /**
+     * Bind domain
+     *
+     * @param string   $domain  name
+     * @param callable $call    callback
+     * @param array    $options list
+     *
+     * @return self
+     */
     public function domain($domain, $call, array $options = [])
     {
         $this->domain = $domain;
@@ -286,6 +394,15 @@ class Router
         return $this;
     }
 
+    /**
+     * Bind controller
+     *
+     * @param string $path       value
+     * @param string $controller name
+     * @param array  $options    list
+     *
+     * @return self
+     */
     public function controller($path, $controller, array $options = [])
     {
         $this->controller = true;
@@ -295,6 +412,15 @@ class Router
         return $this;
     }
 
+    /**
+     * Bind REST
+     *
+     * @param string $path       value
+     * @param string $controller name
+     * @param array  $options    list
+     *
+     * @return self
+     */
     public function resource($path, $controller, array $options = [])
     {
         $name = 'id';
@@ -316,6 +442,15 @@ class Router
         return $this;
     }
 
+    /**
+     * Bing where condition
+     *
+     * @param string $param   name
+     * @param string $regexp  expression
+     * @param mixed  $default fallback
+     *
+     * @return self
+     */
     public function where($param, $regexp, $default = null)
     {
         call_user_func_array([$this->lastRoute, 'where'], func_get_args());
@@ -336,7 +471,7 @@ class Router
 
         return $this;
     }
-    
+
     /**
      * Set auth checker
      *
@@ -347,14 +482,14 @@ class Router
     public function auth(callable $call)
     {
         $this->lastRoute->setAuth($call);
-        
+
         return $this;
     }
 
     /**
      * Load XML routes
      *
-     * @param  string $path to xml routes
+     * @param string $path to xml routes
      *
      * @return self
      */
@@ -368,7 +503,7 @@ class Router
     /**
      * Route resolver
      *
-     * @param  string $uri request uri
+     * @param string $uri request uri
      *
      * @return Beacon\Route
      */
@@ -420,10 +555,10 @@ class Router
 
             if (!$this->matcher->checkAuth($route)) {
                 RouteError::setErrorCode(RouteError::AUTH_ERROR);
-                
+
                 return $this->fallbackRoute;
             }
-            
+
             return $route;
         }
 

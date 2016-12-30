@@ -1,5 +1,8 @@
 <?php
 namespace Beacon;
+
+use SimpleXMLElement;
+
 /**
  * XML route parser
  *
@@ -9,9 +12,6 @@ namespace Beacon;
  * @license  https://opensource.org/licenses/MIT MIT
  * @link     http://github.com/undercloud/beacon
  */
-
-use SimpleXMLElement;
-
 class XmlParser
 {
     /**
@@ -46,6 +46,10 @@ class XmlParser
             $value = null;
 
             switch ($key) {
+                case 'auth':
+                    $value = $e->attributes()->value;
+                break;
+
                 case 'secure':
                     $value = (
                         'true' === (string)$e->attributes()->value

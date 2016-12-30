@@ -12,9 +12,7 @@
 - RESTful
 - Unicode
 - Wildcard attributes
-
-##ToDO
-* auth
+- Auth
 
 ##Requirements
 PHP 5.4+
@@ -304,6 +302,7 @@ have last argument named `$options`, now it support next params:
 
 * secure - secure flag
 * middleware - hold middleware chain
+* auth - access checker
 
 Options defined in parent sections, will be inherited by childs, e.g.:
 ```PHP
@@ -359,6 +358,12 @@ $router
   }, ['middleware' => ['add:MiddlewareApi']]);
 ```
 Now middleware stack for `/api/guest` is `['MiddlewareApi','MiddlewareGuest']`
+
+##Auth
+
+```PHP
+
+``
 
 ##Xml
 For loading XML file with routes use next code:
