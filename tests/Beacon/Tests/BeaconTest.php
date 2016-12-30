@@ -197,7 +197,7 @@ class BeaconTest extends PHPUnit_Framework_TestCase
         $this->assertFalse(call_user_func($route->getCallback()));
 
         $flag = true;
-        $route = $this->router->go('/dahsboard');
+        $route = $this->router->go('/dashboard');
         $this->assertTrue(call_user_func($route->getCallback()));
     }
 }
