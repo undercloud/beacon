@@ -230,6 +230,9 @@ class BeaconTest extends PHPUnit_Framework_TestCase
 
         self::$subAuth = true;
         $route = $this->router->go('/api/user');
+
+        $flag = true;
+        $route = $this->router->go('/api/user');
         $this->assertTrue(call_user_func($route->getCallback()));
     }
 }

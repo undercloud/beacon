@@ -78,6 +78,7 @@ class Route
      * @var callable
      */
     private $auth;
+
     /**
      * Magic __call
      *
