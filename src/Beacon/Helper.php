@@ -135,27 +135,33 @@ class Helper
      */
     public static function processOptions(array $options)
     {
-        $formatted = array();
+        $formatted = [];
         foreach ($options as $option) {
             foreach ($option as $key => $value) {
                 switch ($key) {
-                case 'auth':
                 case 'where':
                 case 'secure':
                     $formatted[$key] = $value;
                 break;
 
+                case 'auth':
+                    if (!isset($formatted[$key])) {
+                        $formatted[$key] = [];
+                    }
+
+                    $formatted[$key][] = $value;
+                break;
+
                 case 'method':
                 case 'middleware':
                     if (!isset($formatted[$key])) {
-                        $formatted[$key] = array();
+                        $formatted[$key] = [];
                     }
 
                     $value = (array) $value;
 
                     list($corns, $darnels) = call_user_func(function ($array) {
-                        $ok   = array();
-                        $fail = array();
+                        $ok = $fail = [];
 
                         foreach ($array as $key => $value) {
                             if (false !== strpos($value, ':')) {

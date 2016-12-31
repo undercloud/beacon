@@ -363,7 +363,7 @@ Now middleware stack for `/api/guest` is `['MiddlewareApi','MiddlewareGuest']`
 
 ```PHP
 
-``
+```
 
 ##Xml
 For loading XML file with routes use next code:

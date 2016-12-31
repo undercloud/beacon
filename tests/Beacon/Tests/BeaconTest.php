@@ -170,21 +170,30 @@ class BeaconTest extends PHPUnit_Framework_TestCase
         );
     }
 
+    public static $auth = false;
+
+    public function auth()
+    {
+        return self::$auth;
+    }
+
+    public static $subAuth = false;
+
+    public function subAuth()
+    {
+        return self::$subAuth;
+    }
+
     public function testAuth()
     {
         $thisis = $this;
-
-        $flag = false;
-        $auth = function()use($flag){
-            return $flag;
-        };
 
         $this
             ->router
             ->on('/dashboard', function(){
                 return true;
             })
-                ->auth($auth)
+                ->auth('Beacon\\Tests\\BeaconTest::auth')
             ->otherwise(function()use($thisis){
                 $error = \Beacon\RouteError::getErrorCode();
                 $thisis->assertEquals($error,\Beacon\RouteError::AUTH_ERROR);
@@ -196,8 +205,31 @@ class BeaconTest extends PHPUnit_Framework_TestCase
 
         $this->assertFalse(call_user_func($route->getCallback()));
 
-        $flag = true;
-        $route = $this->router->go('/dahsboard');
+        self::$auth = true;
+        $route = $this->router->go('/dashboard');
+        $this->assertTrue(call_user_func($route->getCallback()));
+
+        $this
+            ->router
+            ->group('/api', function($route){
+                $route->on('/user', function(){
+                    return true;
+                },['auth' => 'Beacon\\Tests\\BeaconTest::subAuth']);
+            }, ['auth' => 'Beacon\\Tests\\BeaconTest::auth'])
+            ->otherwise(function(){
+                return false;
+            });
+
+        self::$auth = false;
+        $route = $this->router->go('/api/user');
+        $this->assertFalse(call_user_func($route->getCallback()));
+
+        self::$auth = true;
+        $route = $this->router->go('/api/user');
+        $this->assertFalse(call_user_func($route->getCallback()));
+
+        self::$subAuth = true;
+        $route = $this->router->go('/api/user');
         $this->assertTrue(call_user_func($route->getCallback()));
     }
 }

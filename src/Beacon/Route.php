@@ -117,7 +117,7 @@ class Route
      */
     public function setOptions(array $options)
     {
-        $keys = ['secure','method','middleware','where'];
+        $keys = ['auth','secure','method','middleware','where'];
 
         foreach ($options as $key => $value) {
             if (in_array($key, $keys)) {

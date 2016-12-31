@@ -2,6 +2,7 @@
 namespace Beacon;
 
 use ReflectionClass;
+use ReflectionMethod;
 use ReflectionException;
 
 /**
@@ -177,11 +178,26 @@ class Matcher
     public function checkAuth(Route $route)
     {
         $auth = $route->getAuth();
-
         if (null === $auth) {
             return true;
         }
 
-        return (bool) call_user_func($auth, $route);
+        foreach ($auth as $call) {
+            if (is_string($call) and false !== strpos($call, '::')) {
+                list($class, $method) = explode('::', $call);
+
+                if (!(new ReflectionMethod($class, $method))->isStatic()) {
+                    $class = new $class;
+                }
+
+                $call = [$class, $method];
+            }
+
+            if (!call_user_func($call, $route)) {
+                return false;
+            }
+        }
+
+        return true;
     }
 }

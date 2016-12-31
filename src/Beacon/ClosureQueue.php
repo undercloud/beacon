@@ -17,7 +17,7 @@ class ClosureQueue
     /**
      * @var array
      */
-    protected $queue = array();
+    protected $queue = [];
 
     /**
      * @var Route
@@ -52,7 +52,7 @@ class ClosureQueue
      *
      * @return Closure
      */
-    public function wrap($callback, array $arguments = array())
+    public function wrap($callback, array $arguments = [])
     {
         $callback = array($this->route, $callback);
 

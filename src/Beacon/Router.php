@@ -148,7 +148,8 @@ class Router
     {
         $options = $this->processOptions($options);
 
-        if (!isset($options['method']) or !in_array($this->method, $options['method'])) {
+        if (!isset($options['method'])
+            or !in_array($this->method, $options['method'])) {
             return;
         }
 
@@ -479,9 +480,9 @@ class Router
      *
      * @return self
      */
-    public function auth(callable $call)
+    public function auth($call)
     {
-        $this->lastRoute->setAuth($call);
+        $this->lastRoute->setAuth([$call]);
 
         return $this;
     }

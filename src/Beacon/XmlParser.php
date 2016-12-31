@@ -38,7 +38,9 @@ class XmlParser
      */
     public function parseOptions(SimpleXMLElement $node)
     {
-        if (!$node->count()) return [];
+        if (!$node->count()) {
+            return [];
+        }
 
         $options = [];
         foreach ($node[0] as $e) {
