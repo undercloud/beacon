@@ -137,7 +137,7 @@ class XmlParser
         foreach ($group->children() as $node) {
             if ('group' === $node->getName()) {
                 $queue->enqueue($this->parseGroup($node));
-            } else if ('options' === $node->getName()) {
+            } elseif ('options' === $node->getName()) {
                 if (!$domain) {
                     $options = $this->parseOptions($node);
                 }

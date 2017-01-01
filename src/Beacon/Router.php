@@ -436,7 +436,7 @@ class Router
         $this->post($path, $controller . '::store', $options);
         $this->get($path . '/:' . $name, $controller . '::show', $options);
         $this->get($path . '/:' . $name . '/edit', $controller . '::edit', $options);
-        $this->put($path . '/:' . $name, $controller . '::update',  $options);
+        $this->put($path . '/:' . $name, $controller . '::update', $options);
         $this->delete($path . '/:' . $name, $controller . '::destroy', $options);
         $this->rest = false;
 

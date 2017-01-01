@@ -94,18 +94,22 @@ class Route
 
         if (!property_exists($this, $property)) {
             throw new Exception(
-                sprintf('Property %s is not defined in %s', $property,  __CLASS__)
+                sprintf(
+                    'Property %s is not defined in %s',
+                    $property,
+                    __CLASS__
+                )
             );
         }
 
         if ('set' === $prefix) {
             return $this->{$property} = reset($args);
-        } else if ('get' === $prefix) {
+        } elseif ('get' === $prefix) {
             return $this->{$property};
         }
 
         throw new Exception(
-            sprintf('Method %s is not defined in %s', $method,  __CLASS__)
+            sprintf('Method %s is not defined in %s', $method, __CLASS__)
         );
     }
 

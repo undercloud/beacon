@@ -188,6 +188,10 @@ $router
       case Beacon\RouterError::REST_RESOLVE_ERROR:
       /* Cannot find implemented method in given REST controller*/
       break;
+
+      case Beacon\RouteError::AUTH_ERROR:
+      /* Auth check failed */
+      break;
     }
   });
 ```
@@ -360,9 +364,18 @@ $router
 Now middleware stack for `/api/guest` is `['MiddlewareApi','MiddlewareGuest']`
 
 ##Auth
-
+You can assign callback for access check:
 ```PHP
-
+$router
+  ->get('/dashboard', 'System::dashboard')
+  ->auth('User::isAdmin')
+```
+Or for high level methods `group`, `domain`, `controller`, `rest`:
+```PHP
+$router
+  ->group('/api', function(){
+    ...
+    }, ['auth' => 'Api::checkKey'])
 ```
 
 ##Xml

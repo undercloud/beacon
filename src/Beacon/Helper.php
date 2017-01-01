@@ -1,5 +1,6 @@
 <?php
 namespace Beacon;
+
 /**
  * Helper
  *
@@ -18,7 +19,9 @@ class Helper
      */
     public function noop()
     {
-        return function () {};
+        return function () {
+
+        };
     }
 
     /**
@@ -139,57 +142,57 @@ class Helper
         foreach ($options as $option) {
             foreach ($option as $key => $value) {
                 switch ($key) {
-                case 'where':
-                case 'secure':
-                    $formatted[$key] = $value;
-                break;
+                    case 'where':
+                    case 'secure':
+                        $formatted[$key] = $value;
+                    break;
 
-                case 'auth':
-                    if (!isset($formatted[$key])) {
-                        $formatted[$key] = [];
-                    }
+                    case 'auth':
+                        if (!isset($formatted[$key])) {
+                            $formatted[$key] = [];
+                        }
 
-                    $formatted[$key][] = $value;
-                break;
+                        $formatted[$key][] = $value;
+                    break;
 
-                case 'method':
-                case 'middleware':
-                    if (!isset($formatted[$key])) {
-                        $formatted[$key] = [];
-                    }
+                    case 'method':
+                    case 'middleware':
+                        if (!isset($formatted[$key])) {
+                            $formatted[$key] = [];
+                        }
 
-                    $value = (array) $value;
+                        $value = (array) $value;
 
-                    list($corns, $darnels) = call_user_func(function ($array) {
-                        $ok = $fail = [];
+                        list($corns, $darnels) = call_user_func(function ($array) {
+                            $ok = $fail = [];
 
-                        foreach ($array as $key => $value) {
-                            if (false !== strpos($value, ':')) {
-                                $ok[$key] = $value;
-                            } else {
-                                $fail[$key] = $value;
+                            foreach ($array as $key => $value) {
+                                if (false !== strpos($value, ':')) {
+                                    $ok[$key] = $value;
+                                } else {
+                                    $fail[$key] = $value;
+                                }
+                            }
+
+                            return array($ok, $fail);
+                        }, $value);
+
+                        if ($darnels) {
+                            $formatted[$key] = $darnels;
+                        } else {
+                            foreach ($corns as $corn) {
+                                list($op, $item) = explode(':', $corn, 2);
+
+                                if ($op === 'add') {
+                                    $formatted[$key][] = $item;
+                                } elseif ($op === 'del') {
+                                    $formatted[$key] = array_diff($formatted[$key], array($item));
+                                }
                             }
                         }
 
-                        return array($ok, $fail);
-                    }, $value);
-
-                    if ($darnels) {
-                        $formatted[$key] = $darnels;
-                    } else {
-                        foreach ($corns as $corn) {
-                            list($op, $item) = explode(':', $corn, 2);
-
-                            if ($op === 'add') {
-                                $formatted[$key][] = $item;
-                            } else if ($op === 'del') {
-                                $formatted[$key] = array_diff($formatted[$key], array($item));
-                            }
-                        }
-                    }
-
-                    $formatted[$key] = array_values($formatted[$key]);
-                break;
+                        $formatted[$key] = array_values($formatted[$key]);
+                    break;
                 }
             }
         }
