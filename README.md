@@ -1,8 +1,8 @@
-#Beacon - PHP Routing System
+# Beacon - PHP Routing System
 [![Build Status](https://travis-ci.org/undercloud/beacon.svg?branch=master)](https://travis-ci.org/undercloud/beacon)
 [![Coverage Status](https://coveralls.io/repos/github/undercloud/beacon/badge.svg?branch=master)](https://coveralls.io/github/undercloud/beacon?branch=master)
 
-##Features
+## Features
 - Zero dependency
 - PCRE pattern path support
 - Route groups
@@ -14,13 +14,13 @@
 - Wildcard attributes
 - Auth
 
-##Requirements
+## Requirements
 PHP 5.4+
 
-##Installation
+## Installation
 `composer require undercloud/beacon`
 
-##.htaccess
+## .htaccess
 Pretty URLs with .htaccess:
 ```
 RewriteEngine On
@@ -29,7 +29,7 @@ RewriteCond   %{REQUEST_FILENAME}       !-f
 RewriteRule   ^(.*) index.php?%{QUERY_STRING}
 ```
 
-##Setup
+## Setup
 ```PHP
 // if installed by composer
 require '/path/to/vendor/autoload.php';
@@ -46,7 +46,7 @@ $router = new Beacon\Router([
 ]);
 ```
 
-##Define routes
+## Define routes
 Here's a basic usage example:
 ```PHP
 $router
@@ -78,13 +78,13 @@ $route->getParams();
 $route->getMiddleware();
 ```
 
-###Unicode paths
+### Unicode paths
 Route paths can contain any Unicode character set
 ```PHP
 $router->on('/gâteau-français', function () { ... })
 ```
 
-###Methods
+### Methods
 Complete list of avail route methods
 ```PHP
 /*
@@ -104,7 +104,7 @@ $router->head($path, $call [, $options]);
 $router->match(array $methods, $path, $call [, $options]);
 ```
 
-###Params
+### Params
 Beacon supports named params.
 For example, route with binded params:
 ```PHP
@@ -142,7 +142,7 @@ Now params will be fetched into:
 ```
 for retrieve params use `$route->getParams()`
 
-###Wildcard Attributes
+### Wildcard Attributes
 Sometimes it is useful to allow the trailing part of the path be anything at all.
 To allow arbitrary trailing path segments on a route, call the wildcard() method.
 This will let you specify the attribute name under which the arbitrary trailing
@@ -159,7 +159,7 @@ $route = $router->go('/foo/bar/baz/quux');
 $params = $route->getParams();
 ```
 
-###Otherwise
+### Otherwise
 If request cannot be resolved, you can define fallback:
 ```PHP
 $router
@@ -196,7 +196,7 @@ $router
   });
 ```
 
-###Controller
+### Controller
 You can define controller namespace and bind methods to path:
 ```PHP
 // bind path to controller
@@ -208,7 +208,7 @@ $call = $route->getCallback();
 ```
 if requested method undefined or is not public, Beacon return fallback function.
 
-###Group
+### Group
 Routes can be grouped:
 ```PHP
 $router->group('/api', function ($router) {
@@ -227,7 +227,7 @@ $router->group('/api', function ($router) {
 });
 ```
 
-###Domain
+### Domain
 If your app can de accessed from  multiple hostnames, you can setup personal routes:
 ```PHP
 $router
@@ -241,7 +241,7 @@ $router
   });
 ```
 
-###REST
+### REST
 It so easy to make RESTfull service, define path:
 ```PHP
 $router->resource('/photo', 'ControllerPhoto', [
@@ -286,7 +286,7 @@ Next table show conformity between request path and controller methods:
 |DELETE	|/photo/:photo			|destroy|ControllerPhoto::destroy
 Note, that if requested method undefined or is not public, Beacon return fallback function.
 
-##Route options
+## Route options
 All methods:
 
 * on
@@ -346,7 +346,7 @@ $router
   ])
 ```
 
-##Middleware chain
+## Middleware chain
 Beacon makes it easy to manage the chain of middlewares, look at this example:
 ```PHP
 $router
@@ -363,7 +363,7 @@ $router
 ```
 Now middleware stack for `/api/guest` is `['MiddlewareApi','MiddlewareGuest']`
 
-##Auth
+## Auth
 You can assign callback for access check:
 ```PHP
 $router
@@ -378,12 +378,12 @@ $router
     }, ['auth' => 'Api::checkKey'])
 ```
 
-##Xml
+## Xml
 For loading XML file with routes use next code:
 ```PHP
 $router->loadFromXml('/path/to/routes.xml');
 ```
 for more details, see [beacon.xml](https://github.com/undercloud/beacon/blob/master/beacon.xml) file specification
 
-##Error Handling
+## Error Handling
 see [Otherwise section](https://github.com/undercloud/beacon#otherwise)
