@@ -77,13 +77,19 @@ class Helper
     {
         $segments = explode('/', $path);
 
-        $segments = array_filter($segments, function ($item) {
-            return (isset($item[0]) and $item[0] === ':');
-        });
+        $segments = array_filter(
+            $segments,
+            function ($item) {
+                return (isset($item[0]) and $item[0] === ':');
+            }
+        );
 
-        $segments = array_map(function ($item) {
-            return preg_replace('~\W~', '', $item);
-        }, $segments);
+        $segments = array_map(
+            function ($item) {
+                return preg_replace('~\W~', '', $item);
+            },
+            $segments
+        );
 
         $segments = array_flip($segments);
 
@@ -145,16 +151,14 @@ class Helper
                     case 'where':
                     case 'secure':
                         $formatted[$key] = $value;
-                    break;
-
+                        break;
                     case 'auth':
                         if (!isset($formatted[$key])) {
                             $formatted[$key] = [];
                         }
 
                         $formatted[$key][] = $value;
-                    break;
-
+                        break;
                     case 'method':
                     case 'middleware':
                         if (!isset($formatted[$key])) {
@@ -163,19 +167,22 @@ class Helper
 
                         $value = (array) $value;
 
-                        list($corns, $darnels) = call_user_func(function ($array) {
-                            $ok = $fail = [];
+                        list($corns, $darnels) = call_user_func(
+                            function ($array) {
+                                $ok = $fail = [];
 
-                            foreach ($array as $key => $value) {
-                                if (false !== strpos($value, ':')) {
-                                    $ok[$key] = $value;
-                                } else {
-                                    $fail[$key] = $value;
+                                foreach ($array as $key => $value) {
+                                    if (false !== strpos($value, ':')) {
+                                        $ok[$key] = $value;
+                                    } else {
+                                        $fail[$key] = $value;
+                                    }
                                 }
-                            }
 
-                            return array($ok, $fail);
-                        }, $value);
+                                return array($ok, $fail);
+                            },
+                            $value
+                        );
 
                         if ($darnels) {
                             $formatted[$key] = $darnels;
@@ -192,7 +199,7 @@ class Helper
                         }
 
                         $formatted[$key] = array_values($formatted[$key]);
-                    break;
+                        break;
                 }
             }
         }

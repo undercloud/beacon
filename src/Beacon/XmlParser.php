@@ -50,20 +50,17 @@ class XmlParser
             switch ($key) {
                 case 'auth':
                     $value = $e->attributes()->value;
-                break;
-
+                    break;
                 case 'secure':
                     $value = (
                         'true' === (string)$e->attributes()->value
                         ? true : false
                     );
-                break;
-
+                    break;
                 case 'method':
                 case 'middleware':
                     $value = explode(',', (string)$e->attributes()->value);
-                break;
-
+                    break;
                 case 'where':
                     $where = [];
                     foreach ($e->children() as $var) {
@@ -79,7 +76,7 @@ class XmlParser
                     }
 
                     $value = $where;
-                break;
+                    break;
             }
 
             $options[$key] = $value;
@@ -212,22 +209,19 @@ class XmlParser
                 switch ($tag) {
                     default:
                         $queue->enqueue($this->parseRoute($route));
-                    break;
-
+                        break;
                     case 'options':
                         $queue->enqueue(
                             (new ClosureQueue($this->router))
                                 ->wrap('globals', [$this->parseOptions($route)])
                         );
-                    break;
-
+                        break;
                     case 'group':
                         $queue->enqueue($this->parseGroup($route));
-                    break;
-
+                        break;
                     case 'domain':
                         $queue->enqueue($this->parseDomain($route));
-                    break;
+                        break;
                 }
             }
 
