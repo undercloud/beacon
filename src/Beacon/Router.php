@@ -42,6 +42,11 @@ class Router
     /**
      * @var array
      */
+    private $optionCursor;
+
+    /**
+     * @var array
+     */
     private $options = [];
 
     /**
@@ -87,7 +92,7 @@ class Router
     public function __construct(array $options = [])
     {
         if (isset($options['host'])) {
-            $this->host   = $options['host'];
+            $this->host = $options['host'];
         }
 
         if (isset($options['isSecured'])) {
@@ -103,6 +108,7 @@ class Router
 
         $this->fallbackRoute = new Route;
         $this->fallbackRoute->setCallback($this->helper->noop());
+        $this->lastRoute = $this->fallbackRoute;
     }
 
     /**
@@ -114,11 +120,12 @@ class Router
      */
     private function processOptions(array $options)
     {
-        $this->options[] = $options;
-        $options = $this->helper->processOptions($this->options);
+        $this->optionCursor = &$options;
+        $this->options[] = &$options;
+        $hold = $this->options;
         array_pop($this->options);
 
-        return $options;
+        return $hold;
     }
 
     /**
@@ -128,9 +135,11 @@ class Router
      *
      * @return self
      */
-    public function globals(array $options)
+    public function globals()
     {
-        $this->options = [$options];
+        $options = [];
+        $this->optionCursor = &$options;
+        $this->options[] = &$options;
 
         return $this;
     }
@@ -147,9 +156,13 @@ class Router
     private function bind($path, $call, array $options = [])
     {
         $options = $this->processOptions($options);
+        $last = $options[count($options) - 1];
 
-        if (!isset($options['method'])
-            or !in_array($this->method, $options['method'])) {
+        if (!isset($last['method'])) {
+            return;
+        }
+
+        if (!in_array($this->method, $last['method'])) {
             return;
         }
 
@@ -175,7 +188,7 @@ class Router
 
         $route->setPath($path);
         $route->setCallback($call);
-        $route->setOptions($options);
+        $route->holdOptions($options);
 
         if ($this->controller) {
             $route->setController($this->controller);
@@ -345,8 +358,9 @@ class Router
     public function otherwise($call, array $options = [])
     {
         $options = $this->processOptions($options);
-        $this->fallbackRoute->setOptions($options);
+        $this->fallbackRoute->holdOptions($options);
         $this->fallbackRoute->setCallback($call);
+        $this->lastRoute = $this->fallbackRoute;
 
         return $this;
     }
@@ -363,10 +377,12 @@ class Router
     public function group($prefix, $call, array $options = [])
     {
         $this->groups[] = $prefix;
-        $this->options[] = $options;
+        $this->optionCursor = &$options;
+        $this->options[] = &$options;
 
         call_user_func($call, $this);
 
+        $this->optionCursor = &$this->options[count($this->options) - 1];
         array_pop($this->options);
         array_pop($this->groups);
 
@@ -385,10 +401,12 @@ class Router
     public function domain($domain, $call, array $options = [])
     {
         $this->domain = $domain;
-        $this->options[] = $options;
+        $this->optionCursor = &$options;
+        $this->options[] = &$options;
 
         call_user_func($call, $this);
 
+        $this->optionCursor = &$this->options[count($this->options) - 1];
         array_pop($this->options);
         $this->domain = null;
 
@@ -444,22 +462,6 @@ class Router
     }
 
     /**
-     * Bing where condition
-     *
-     * @param string $param   name
-     * @param string $regexp  expression
-     * @param mixed  $default fallback
-     *
-     * @return self
-     */
-    public function where($param, $regexp, $default = null)
-    {
-        call_user_func_array([$this->lastRoute, 'where'], func_get_args());
-
-        return $this;
-    }
-
-    /**
      * Set wildcard
      *
      * @param string $name value
@@ -474,15 +476,100 @@ class Router
     }
 
     /**
+     * Bing where condition
+     *
+     * @param string $param   name
+     * @param string $regexp  expression
+     * @param mixed  $default fallback
+     *
+     * @return self
+     */
+    public function withWhere($param, $regexp, $default = null)
+    {
+        $where = ['regexp' => $regexp];
+
+        if (isset(func_get_args()[2])) {
+            $where['default'] = $default;
+        }
+
+        $this->optionCursor['where'][$param] = $where;
+
+        return $this;
+    }
+
+    /**
      * Set auth checker
      *
      * @param callable $call resolver
      *
      * @return self
      */
-    public function auth($call)
+    public function withAuth($call)
     {
-        $this->lastRoute->setAuth([$call]);
+        $this->optionCursor['auth'] = $call;
+
+        return $this;
+    }
+
+    /**
+     * Set secure flag
+     *
+     * @param bool $flag value
+     *
+     * @return self
+     */
+    public function withSecure($flag)
+    {
+        $this->optionCursor['secure'] = (bool) $flag;
+
+        return $this;
+    }
+
+    public function withMiddleware($middleware)
+    {
+        $middleware = (array) $middleware;
+
+        $middleware = array_map(
+            function ($mid) {
+                return 'add:' . $mid;
+            },
+            $middleware
+        );
+
+        $this->optionCursor['middleware'] = array_merge(
+            isset($this->optionCursor['middleware'])
+                ? $this->optionCursor['middleware']
+                : [],
+            $middleware
+        );
+
+        return $this;
+    }
+
+    public function withoutMiddleware($middleware)
+    {
+        $middleware = (array) $middleware;
+
+        $middleware = array_map(
+            function ($mid) {
+                return 'del:' . $mid;
+            },
+            $middleware
+        );
+
+        $this->optionCursor['middleware'] = array_merge(
+            isset($this->optionCursor['middleware'])
+                ? $this->optionCursor['middleware']
+                : [],
+            $middleware
+        );
+
+        return $this;
+    }
+
+    public function withoutAnyMiddleware()
+    {
+        $this->optionCursor['middleware'] = [-1];
 
         return $this;
     }
@@ -520,6 +607,8 @@ class Router
         krsort($this->routes);
 
         foreach ($this->routes as $route) {
+            $route->assignOptions();
+
             if (!$this->matcher->checkPath($route, $uri)) {
                 continue;
             }
@@ -564,6 +653,7 @@ class Router
         }
 
         RouteError::setErrorCode(RouteError::NOT_FOUND_ERROR);
+        $this->fallbackRoute->assignOptions();
 
         return $this->fallbackRoute;
     }

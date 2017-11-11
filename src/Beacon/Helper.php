@@ -51,8 +51,8 @@ class Helper
     {
         $regexp = '~\(?\/:[\w\)]*~';
 
-        $compiler = function ($e) {
-            $param = $e[0];
+        $compiler = function ($match) {
+            $param = $match[0];
             $compiled = '/[\w]+';
 
             if ($param[0] === '(' and substr($param, -1) === ')') {
@@ -117,10 +117,9 @@ class Helper
         );
 
         foreach ($params as $name => $index) {
+            $params[$name] = null;
             if (isset($segments[$index])) {
                 $params[$name] = $segments[$index];
-            } else {
-                $params[$name] = null;
             }
         }
 
@@ -184,10 +183,20 @@ class Helper
                             $value
                         );
 
+                        if ($key == 'middleware') {
+                            if ( [-1] === $darnels) {
+                                $formatted[$key] = $darnels = [];
+                            }
+                        }
+
                         if ($darnels) {
                             $formatted[$key] = $darnels;
                         } else {
                             foreach ($corns as $corn) {
+                                if (-1 === $corn) {
+                                    $formatted[$key] = [];
+                                }
+
                                 list($op, $item) = explode(':', $corn, 2);
 
                                 if ($op === 'add') {

@@ -15,6 +15,11 @@ use Exception;
 class Route
 {
     /**
+     * @var array
+     */
+    private $options = [];
+
+    /**
      * @var string
      */
     private $path;
@@ -125,29 +130,20 @@ class Route
         $keys = ['auth','secure','method','middleware','where'];
 
         foreach ($options as $key => $value) {
-            if (in_array($key, $keys)) {
+            if (in_array($key, $keys, true)) {
                 $this->{$key} = $value;
             }
         }
     }
 
-    /**
-     * Process where
-     *
-     * @param string $param   name
-     * @param string $regexp  expression
-     * @param string $default value
-     *
-     * @return null
-     */
-    public function where($param, $regexp, $default = null)
+    public function holdOptions(array $options)
     {
-        $where = ['regexp' => $regexp];
+        $this->options = $options;
+    }
 
-        if (isset(func_get_args()[2])) {
-            $where['default'] = $default;
-        }
-
-        $this->where[$param] = $where;
+    public function assignOptions()
+    {
+        $options = Helper::processOptions($this->options);
+        $this->setOptions($options);
     }
 }

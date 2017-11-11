@@ -155,12 +155,12 @@ class Matcher
 		foreach ($params as $key => $value) {
 			if (isset($where[$key])) {
 				if (!preg_match($where[$key]['regexp'], $value)) {
-					if (isset($where[$key]['default'])) {
-						$params[$key] = $where[$key]['default'];
-						$route->setParams($params);
-					} else {
-						return false;
-					}
+					if (!isset($where[$key]['default'])) {
+                        return false;
+                    }
+
+					$params[$key] = $where[$key]['default'];
+					$route->setParams($params);
 				}
 			}
 		}
@@ -178,6 +178,7 @@ class Matcher
     public function checkAuth(Route $route)
     {
         $auth = $route->getAuth();
+
         if (null === $auth) {
             return true;
         }
