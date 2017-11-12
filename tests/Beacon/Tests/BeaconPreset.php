@@ -4,4 +4,3 @@
 		'method'    => 'GET',
 		'isSecured' => true
 	]);
-?>

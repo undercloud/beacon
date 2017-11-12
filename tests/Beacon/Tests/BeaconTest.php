@@ -2,6 +2,7 @@
 namespace Beacon\Tests;
 
 use Beacon\Router;
+use Beacon\RouteError;
 use PHPUnit_Framework_TestCase;
 
 class BeaconTest extends PHPUnit_Framework_TestCase
@@ -80,11 +81,30 @@ class BeaconTest extends PHPUnit_Framework_TestCase
 
         $route = $this->router
             ->controller('/api', '\Beacon\Tests\ControllerApi')
-            ->go('/api/get-users/');
+            ->controller('/foo', '\Unexistent\ControllerApi')
+            ->otherwise(false);
 
         $this->assertEquals(
             '\Beacon\Tests\ControllerApi::getUsers',
-            $route->getCallback()
+            $route->go('/api/get-users/')->getCallback()
+        );
+
+        $route->go('/api')->getCallback();
+        $this->assertEquals(
+            RouteError::CONTROLLER_RESOLVE_ERROR,
+            RouteError::getErrorCode()
+        );
+
+        $route->go('/api/no-method')->getCallback();
+        $this->assertEquals(
+            RouteError::CONTROLLER_RESOLVE_ERROR,
+            RouteError::getErrorCode()
+        );
+
+        $route->go('/foo')->getCallback();
+        $this->assertEquals(
+            RouteError::CONTROLLER_RESOLVE_ERROR,
+            RouteError::getErrorCode()
         );
     }
 
@@ -157,7 +177,9 @@ class BeaconTest extends PHPUnit_Framework_TestCase
                         ->withoutMiddleware('A')
                     ->on('/article', null)
                         ->withoutAnyMiddleware()
-                        ->withMiddleware('D');
+                        ->withMiddleware('D')
+                    ->controller('/controller', '\Beacon\Tests\ControllerApi')
+                        ->withMiddleware('G');
             })
                 ->withMiddleware('E')
             ->otherwise(null)
@@ -181,6 +203,11 @@ class BeaconTest extends PHPUnit_Framework_TestCase
         $this->assertEquals(
             ['A','F'],
             $this->router->go('/404')->getMiddleware()
+        );
+
+        $this->assertEquals(
+            ['A','E','G'],
+            $this->router->go('/api/controller/get-users')->getMiddleware()
         );
     }
 
@@ -268,10 +295,22 @@ class BeaconTest extends PHPUnit_Framework_TestCase
         self::$auth = true;
         $route = $this->router->go('/api/user');
         $this->assertFalse(call_user_func($route->getCallback()));
-/*
+
         self::$subAuth = true;
         $route = $this->router->go('/api/user');
         $this->assertTrue(call_user_func($route->getCallback()));
-        */
+    }
+
+    public function testResource()
+    {
+        $route = $this
+            ->router
+            ->resource('/api', '\Beacon\Tests\ControllerApi')
+            ->go('/api');
+
+        $this->assertEquals(
+            '\Beacon\Tests\ControllerApi::index',
+            $route->getCallback()
+        );
     }
 }

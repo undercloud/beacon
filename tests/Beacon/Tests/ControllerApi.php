@@ -7,5 +7,9 @@ class ControllerApi
 	{
 
 	}
+
+    public function index()
+    {
+
+    }
 }
-?>

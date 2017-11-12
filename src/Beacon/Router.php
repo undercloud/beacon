@@ -403,9 +403,10 @@ class Router
      */
     public function controller($path, $controller)
     {
-        $this->controller = true;
         $options = [];
         $this->optionCursor = &$options;
+
+        $this->controller = true;
         $this->on($path, $controller, $options);
         $this->controller = false;
 
@@ -636,6 +637,8 @@ class Router
 
                 return $this->fallbackRoute;
             }
+
+            RouteError::setErrorCode(RouteError::NO_ERROR);
 
             return $route;
         }
