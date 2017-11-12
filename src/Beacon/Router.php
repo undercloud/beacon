@@ -418,28 +418,23 @@ class Router
      *
      * @param string $path       value
      * @param string $controller name
+     * @param string $paramName  parameter name
      *
      * @return self
      */
-    public function resource($path, $controller)
+    public function resource($path, $controller, $paramName = 'id')
     {
         $options = [];
         $this->optionCursor = &$options;
-
-        $name = 'id';
-        if (isset($options['name'])) {
-            $name = $options['name'];
-            unset($options['name']);
-        }
 
         $this->rest = true;
         $this->get($path, $controller . '::index', $options);
         $this->get($path . '/create', $controller . '::create', $options);
         $this->post($path, $controller . '::store', $options);
-        $this->get($path . '/:' . $name, $controller . '::show', $options);
-        $this->get($path . '/:' . $name . '/edit', $controller . '::edit', $options);
-        $this->put($path . '/:' . $name, $controller . '::update', $options);
-        $this->delete($path . '/:' . $name, $controller . '::destroy', $options);
+        $this->get($path . '/:' . $paramName, $controller . '::show', $options);
+        $this->get($path . '/:' . $paramName . '/edit', $controller . '::edit', $options);
+        $this->put($path . '/:' . $paramName, $controller . '::update', $options);
+        $this->delete($path . '/:' . $paramName, $controller . '::destroy', $options);
         $this->rest = false;
 
         return $this;

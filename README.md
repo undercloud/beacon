@@ -1,6 +1,5 @@
 # Beacon - PHP Routing System
 [![Build Status](https://travis-ci.org/undercloud/beacon.svg?branch=master)](https://travis-ci.org/undercloud/beacon)
-[![Coverage Status](https://coveralls.io/repos/github/undercloud/beacon/badge.svg?branch=master)](https://coveralls.io/github/undercloud/beacon?branch=master)
 
 ## Features
 - Zero dependency
@@ -90,18 +89,17 @@ Complete list of avail route methods
 /*
  * $path - request path, example /users, support PCRE
  * $call - callback, string 'Controller::action' or Closure
- * $options - array of options
  * $methods - array of http methods, example ['post','put']
  */
 
-$router->on($path, $call [, $options]);
-$router->get($path, $call [, $options]);
-$router->post($path, $call [, $options]);
-$router->put($path, $call [, $options]);
-$router->delete($path, $call [, $options]);
-$router->patch($path, $call [, $options]);
-$router->head($path, $call [, $options]);
-$router->match(array $methods, $path, $call [, $options]);
+$router->on($path, $call);
+$router->get($path, $call);
+$router->post($path, $call);
+$router->put($path, $call);
+$router->delete($path, $call);
+$router->patch($path, $call);
+$router->head($path, $call);
+$router->match(array $methods, $path, $call);
 ```
 
 ### Params
@@ -140,7 +138,7 @@ Now params will be fetched into:
   'nickname' => 'Guest'
 ]
 ```
-for retrieve params use `$route->getParams()`
+For retrieve params use `$route->getParams()`
 
 ### Wildcard Attributes
 Sometimes it is useful to allow the trailing part of the path be anything at all.
@@ -152,6 +150,7 @@ values will be stored.
 $router
   ->on('/foo', function() { ... })
     ->wildcard('card')
+  ->on('/bar', function() { ... });
 
 $route = $router->go('/foo/bar/baz/quux');
 
@@ -165,10 +164,6 @@ If request cannot be resolved, you can define fallback:
 $router
   ->otherwise(function(){
     switch(Beacon\RouterError::getErrorCode()){
-      case Beacon\RouterError::NO_ERROR:
-      /* All fine, only for example, never exists in otherwise block */
-      break;
-
       case Beacon\RouterError::NOT_FOUND_ERROR:
       /* Same as 404 error, cannot find any path for current request */
       break;
@@ -206,7 +201,7 @@ $route = $router->go('/users/get-users');
 // will return ControllerUsers::getUsers
 $call = $route->getCallback();
 ```
-if requested method undefined or is not public, Beacon return fallback function.
+If requested method undefined or is not public, Beacon return fallback function.
 
 ### Group
 Routes can be grouped:
@@ -228,7 +223,7 @@ $router->group('/api', function ($router) {
 ```
 
 ### Domain
-If your app can de accessed from  multiple hostnames, you can setup personal routes:
+If your app can de accessed from  multiple hostnames, you can setup personal routes for each domains:
 ```PHP
 $router
   ->domain('api.example.com', function ($router) {
@@ -244,10 +239,12 @@ $router
 ### REST
 It so easy to make RESTfull service, define path:
 ```PHP
-$router->resource('/photo', 'ControllerPhoto', [
+$router->resource(
+  '/photo',
+  'ControllerPhoto', 
   // define param name, default 'id'
-  'name' => 'photo'
-]);
+  $paramName' = 'photo'
+);
 ```
 and define controller with specific methods:
 ```PHP
@@ -350,40 +347,40 @@ $router
 Beacon makes it easy to manage the chain of middlewares, look at this example:
 ```PHP
 $router
-  ->globals([
-    'middleware' => ['MiddlewareAuth']
-  ])
+  ->globals()
+    ->withMiddleware('MiddlewareAuth')
+  ->on('/', function() { ... })
   ->group('/api', function ($router) {
-    $router->on('/guest', 'ControllerApi::getGuests',[
-      // delete global, and append more
-      'middleware' => ['del:MiddlewareAuth','add:MiddlewareGuest']
-    ]);
-    // append middleware
-  }, ['middleware' => ['add:MiddlewareApi']]);
+    $router->on('/guest', 'ControllerApi::getGuests')
+      withoutMiddleware('MiddlewareAuth')
+      withMiddleware('MiddlewareGuest');
+
+    $router->on('/secure')
+      ->withoutAnyMiddleware()
+      ->withMiddleware('MiddlewareSecure');
+  })
+    ->withMiddleware('MiddlewareApi');
 ```
-Now middleware stack for `/api/guest` is `['MiddlewareApi','MiddlewareGuest']`
+Now middleware stack for:
+   `/` is `['MiddlewareAuth','MiddlewareApi']`
+   `/api/guest` is `['MiddlewareApi','MiddlewareGuest']`
+   `/api/secure` is `['MiddlewareSecure']`
 
 ## Auth
 You can assign callback for access check:
 ```PHP
 $router
   ->get('/dashboard', 'System::dashboard')
-  ->auth('User::isAdmin')
+  ->withAuth('User::isAdmin')
 ```
 Or for high level methods `group`, `domain`, `controller`, `rest`:
 ```PHP
 $router
   ->group('/api', function(){
     ...
-    }, ['auth' => 'Api::checkKey'])
+    })
+      ->withAuth('Api::checkKey')
 ```
-
-## Xml
-For loading XML file with routes use next code:
-```PHP
-$router->loadFromXml('/path/to/routes.xml');
-```
-for more details, see [beacon.xml](https://github.com/undercloud/beacon/blob/master/beacon.xml) file specification
 
 ## Error Handling
 see [Otherwise section](https://github.com/undercloud/beacon#otherwise)
