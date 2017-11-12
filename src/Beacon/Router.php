@@ -577,20 +577,6 @@ class Router
     }
 
     /**
-     * Load XML routes
-     *
-     * @param string $path to xml routes
-     *
-     * @return self
-     */
-    public function loadFromXml($path)
-    {
-        (new XmlParser($this))->parse($path);
-
-        return $this;
-    }
-
-    /**
      * Route resolver
      *
      * @param string $uri request uri
