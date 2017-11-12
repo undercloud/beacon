@@ -136,11 +136,23 @@ class Route
         }
     }
 
+    /**
+     * Save temporary options
+     *
+     * @param array $options list
+     *
+     * @return null
+     */
     public function holdOptions(array $options)
     {
         $this->options = $options;
     }
 
+    /**
+     * Build options;
+     *
+     * @return null
+     */
     public function assignOptions()
     {
         $options = Helper::processOptions($this->options);

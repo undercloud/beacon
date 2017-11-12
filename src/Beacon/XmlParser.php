@@ -117,8 +117,8 @@ class XmlParser
     /**
      * Parse group section
      *
-     * @param  SimpleXMLElement $group  instance
-     * @param  boolean          $domain flag
+     * @param SimpleXMLElement $group  instance
+     * @param boolean          $domain flag
      *
      * @return Closure
      */

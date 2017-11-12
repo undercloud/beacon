@@ -108,7 +108,6 @@ class Router
 
         $this->fallbackRoute = new Route;
         $this->fallbackRoute->setCallback($this->helper->noop());
-        $this->lastRoute = $this->fallbackRoute;
     }
 
     /**
@@ -210,19 +209,14 @@ class Router
     /**
      * Bind path
      *
-     * @param string   $path    value
-     * @param callable $call    callback
-     * @param array    $options list
+     * @param string   $path value
+     * @param callable $call callback
      *
      * @return self
      */
-    public function on($path, $call, array $options = [])
+    public function on($path, $call)
     {
-        if (!isset($options['method'])) {
-            $options['method'] = ['post','get','put','delete'];
-        }
-
-        $this->bind($path, $call, $options);
+        $this->bind($path, $call, ['method' => ['post', 'get', 'put', 'delete']]);
 
         return $this;
     }
@@ -230,17 +224,15 @@ class Router
     /**
      * Multiple request binder
      *
-     * @param array    $method  list
-     * @param string   $path    value
-     * @param callable $call    callback
-     * @param array    $options list
+     * @param array    $method list
+     * @param string   $path   value
+     * @param callable $call   callback
      *
      * @return self
      */
-    public function match(array $method, $path, $call, array $options = [])
+    public function match(array $method, $path, $call)
     {
-        $options['method'] = $method;
-        $this->bind($path, $call, $options);
+        $this->bind($path, $call, ['method' => $method]);
 
         return $this;
     }
@@ -248,16 +240,14 @@ class Router
     /**
      * GET request
      *
-     * @param string   $path    value
-     * @param callable $call    callback
-     * @param array    $options list
+     * @param string   $path value
+     * @param callable $call callback
      *
      * @return self
      */
-    public function get($path, $call, array $options = [])
+    public function get($path, $call)
     {
-        $options['method'] = ['get'];
-        $this->bind($path, $call, $options);
+        $this->bind($path, $call, ['method' => ['get']]);
 
         return $this;
     }
@@ -265,16 +255,14 @@ class Router
     /**
      * POST request
      *
-     * @param string   $path    value
-     * @param callable $call    callback
-     * @param array    $options list
+     * @param string   $path value
+     * @param callable $call callback
      *
      * @return self
      */
-    public function post($path, $call, array $options = [])
+    public function post($path, $call)
     {
-        $options['method'] = ['post'];
-        $this->bind($path, $call, $options);
+        $this->bind($path, $call, ['method' => ['post']]);
 
         return $this;
     }
@@ -282,16 +270,14 @@ class Router
     /**
      * PUT request
      *
-     * @param string   $path    value
-     * @param callable $call    callback
-     * @param array    $options list
+     * @param string   $path value
+     * @param callable $call callback
      *
      * @return self
      */
-    public function put($path, $call, array $options = [])
+    public function put($path, $call)
     {
-        $options['method'] = ['put'];
-        $this->bind($path, $call, $options);
+        $this->bind($path, $call, ['method' => ['put']]);
 
         return $this;
     }
@@ -299,16 +285,14 @@ class Router
     /**
      * DELETE request
      *
-     * @param string   $path    value
-     * @param callable $call    callback
-     * @param array    $options list
+     * @param string   $path value
+     * @param callable $call callback
      *
      * @return self
      */
-    public function delete($path, $call, array $options = [])
+    public function delete($path, $call)
     {
-        $options['method'] = ['delete'];
-        $this->bind($path, $call, $options);
+        $this->bind($path, $call, ['method' => ['delete']]);
 
         return $this;
     }
@@ -316,16 +300,14 @@ class Router
     /**
      * PATCH request
      *
-     * @param string   $path    value
-     * @param callable $call    callback
-     * @param array    $options list
+     * @param string   $path value
+     * @param callable $call callback
      *
      * @return self
      */
-    public function patch($path, $call, array $options = [])
+    public function patch($path, $call)
     {
-        $options['method'] = ['patch'];
-        $this->bind($path, $call, $options);
+        $this->bind($path, $call, ['method' => ['patch']]);
 
         return $this;
     }
@@ -333,16 +315,14 @@ class Router
     /**
      * HEAD request
      *
-     * @param string   $path    value
-     * @param callable $call    callback
-     * @param array    $options list
+     * @param string   $path value
+     * @param callable $call callback
      *
      * @return self
      */
-    public function head($path, $call, array $options = [])
+    public function head($path, $call)
     {
-        $options['method'] = ['head'];
-        $this->bind($path, $call, $options);
+        $this->bind($path, $call, ['method' => ['head']]);
 
         return $this;
     }
@@ -350,17 +330,17 @@ class Router
     /**
      * Fallback handler
      *
-     * @param mixed $call    callback
-     * @param array $options route
+     * @param mixed $call callback
      *
      * @return self
      */
-    public function otherwise($call, array $options = [])
+    public function otherwise($call)
     {
+        $options = [];
+        $this->optionCursor = &$options;
         $options = $this->processOptions($options);
         $this->fallbackRoute->holdOptions($options);
         $this->fallbackRoute->setCallback($call);
-        $this->lastRoute = $this->fallbackRoute;
 
         return $this;
     }
@@ -368,14 +348,14 @@ class Router
     /**
      * Group routes
      *
-     * @param string   $prefix  name
-     * @param callable $call    callback
-     * @param array    $options list
+     * @param string   $prefix name
+     * @param callable $call   callback
      *
      * @return self
      */
-    public function group($prefix, $call, array $options = [])
+    public function group($prefix, $call)
     {
+        $options = [];
         $this->groups[] = $prefix;
         $this->optionCursor = &$options;
         $this->options[] = &$options;
@@ -392,14 +372,14 @@ class Router
     /**
      * Bind domain
      *
-     * @param string   $domain  name
-     * @param callable $call    callback
-     * @param array    $options list
+     * @param string   $domain name
+     * @param callable $call   callback
      *
      * @return self
      */
-    public function domain($domain, $call, array $options = [])
+    public function domain($domain, $call)
     {
+        $options = [];
         $this->domain = $domain;
         $this->optionCursor = &$options;
         $this->options[] = &$options;
@@ -418,13 +398,14 @@ class Router
      *
      * @param string $path       value
      * @param string $controller name
-     * @param array  $options    list
      *
      * @return self
      */
-    public function controller($path, $controller, array $options = [])
+    public function controller($path, $controller)
     {
         $this->controller = true;
+        $options = [];
+        $this->optionCursor = &$options;
         $this->on($path, $controller, $options);
         $this->controller = false;
 
@@ -436,12 +417,14 @@ class Router
      *
      * @param string $path       value
      * @param string $controller name
-     * @param array  $options    list
      *
      * @return self
      */
-    public function resource($path, $controller, array $options = [])
+    public function resource($path, $controller)
     {
+        $options = [];
+        $this->optionCursor = &$options;
+
         $name = 'id';
         if (isset($options['name'])) {
             $name = $options['name'];
@@ -525,6 +508,13 @@ class Router
         return $this;
     }
 
+    /**
+     * Add middleware
+     *
+     * @param array|string $middleware name
+     *
+     * @return self
+     */
     public function withMiddleware($middleware)
     {
         $middleware = (array) $middleware;
@@ -538,14 +528,21 @@ class Router
 
         $this->optionCursor['middleware'] = array_merge(
             isset($this->optionCursor['middleware'])
-                ? $this->optionCursor['middleware']
-                : [],
+            ? $this->optionCursor['middleware']
+            : [],
             $middleware
         );
 
         return $this;
     }
 
+    /**
+     * Delete middleware
+     *
+     * @param array|string $middleware name
+     *
+     * @return self
+     */
     public function withoutMiddleware($middleware)
     {
         $middleware = (array) $middleware;
@@ -559,14 +556,19 @@ class Router
 
         $this->optionCursor['middleware'] = array_merge(
             isset($this->optionCursor['middleware'])
-                ? $this->optionCursor['middleware']
-                : [],
+            ? $this->optionCursor['middleware']
+            : [],
             $middleware
         );
 
         return $this;
     }
 
+    /**
+     * Clear middleware chain
+     *
+     * @return self;
+     */
     public function withoutAnyMiddleware()
     {
         $this->optionCursor['middleware'] = [-1];

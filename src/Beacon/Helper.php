@@ -184,7 +184,7 @@ class Helper
                         );
 
                         if ($key == 'middleware') {
-                            if ( [-1] === $darnels) {
+                            if ([-1] === $darnels) {
                                 $formatted[$key] = $darnels = [];
                             }
                         }
