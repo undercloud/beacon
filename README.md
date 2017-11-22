@@ -283,65 +283,7 @@ Next table show conformity between request path and controller methods:
 |DELETE	|/photo/:photo			|destroy|ControllerPhoto::destroy
 Note, that if requested method undefined or is not public, Beacon return fallback function.
 
-## Route options
-All methods:
 
-* on
-* get
-* post
-* put
-* delete
-* patch
-* head
-* match
-* controller
-* group
-* domain
-* resource
-
-have last argument named `$options`, now it support next params:
-
-* secure - secure flag
-* middleware - hold middleware chain
-* auth - access checker
-
-Options defined in parent sections, will be inherited by childs, e.g.:
-```PHP
-$router->group('/api', function ($router) {
-  // now in inherit options defined in group
-  $router->get('/users/:id', function() {...});
-}, [
-  'secure' => true,
-  'middleware' => ['MiddlewareAuth','MiddlewareCompressor']
-]);
-```
-
-You can override inherited, just define personal:
-```PHP
-$router->group('/api', function ($router) {
-  // now in inherit options defined in group
-  $router->get('/users/:id', function() {...}, [
-    'secure' => false
-  ]);
-}, [
-  'secure' => true,
-  'middleware' => ['MiddlewareAuth','MiddlewareCompressor']
-]);
-```
-For defining global pre-setuped options use `Beacon\Router::globals(array $options)`.
-```PHP
-$router
-  ->globals([
-    'secure' => true,
-    'middleware' => ['MiddlewareAuth']
-  ])
-  // inherit global options
-  ->get('/', 'Controller::index')
-  // override global
-  ->post('/users', 'ControllerUsers::getUsers', [
-    'secure' => false
-  ])
-```
 
 ## Middleware chain
 Beacon makes it easy to manage the chain of middlewares, look at this example:
