@@ -313,4 +313,18 @@ class BeaconTest extends PHPUnit_Framework_TestCase
             $route->getCallback()
         );
     }
+
+    public function testSamePath()
+    {
+        $route = $this
+            ->router
+                ->get('/', function() { return 'get'; })
+                ->post('/', function() { return 'post'; })
+            ->go('/');
+
+        $this->assertEquals(
+            'get',
+            call_user_func($route->getCallback())
+        );
+    }
 }

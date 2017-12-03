@@ -13,7 +13,7 @@ namespace Beacon;
 class Helper
 {
     /**
-     * Creare noop callback
+     * Create noop callback
      *
      * @return Closure
      */
@@ -110,11 +110,10 @@ class Helper
         $params = self::extractPlaceholder($origin);
         $segments = explode('/', $path);
 
-        $numeric = (
-            $params
-            ? array_slice($segments, (integer)min($params))
-            : []
-        );
+        $numeric = [];
+        if ($params) {
+            $numeric = array_slice($segments, (integer) min($params));
+        }
 
         foreach ($params as $name => $index) {
             $params[$name] = null;

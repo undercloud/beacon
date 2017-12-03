@@ -12,17 +12,4 @@ use Exception;
  * @license  https://opensource.org/licenses/MIT MIT
  * @link     http://github.com/undercloud/beacon
  */
-class RouteException extends Exception
-{
-    /**
-     * Initialize
-     *
-     * @param string         $message  error
-     * @param integer        $code     error
-     * @param Exception|null $previous instance
-     */
-	public function __construct($message, $code = 0, Exception $previous = null)
-	{
-		parent::__construct($message, $code, $previous);
-	}
-}
+class RouteException extends Exception {}

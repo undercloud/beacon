@@ -45,6 +45,10 @@ $router = new Beacon\Router([
 ]);
 ```
 
+## Concept
+The API is built on the principle of a (fluent interface)
+[https://en.wikipedia.org/wiki/Fluent_interface]
+
 ## Define routes
 Here's a basic usage example:
 ```PHP
@@ -65,7 +69,6 @@ $route = $router->go($_SERVER['REQUEST_URI']);
 ```
 
 `Beacon\Router::go` method return `Beacon\Route` instance with next methods:
-
 ```PHP
 // route path
 $route->getPath();
@@ -125,9 +128,9 @@ You can also add additional check for params:
 $router
   ->on('/user/:id/:name(/:nickname)', 'ControllerUser::getUser')
     // check numeric id
-    ->where('id', '/\d+/')
+    ->withWhere('id', '/\d+/')
     // empty or invalid nickname will be replaced with 'Guest'
-    ->where('nickname', '/[A-Za-z0-9]+/', 'Guest')
+    ->withWhere('nickname', '/[A-Za-z0-9]+/', 'Guest')
   ->on(...);
 ```
 Now params will be fetched into:
@@ -145,7 +148,6 @@ Sometimes it is useful to allow the trailing part of the path be anything at all
 To allow arbitrary trailing path segments on a route, call the wildcard() method.
 This will let you specify the attribute name under which the arbitrary trailing
 values will be stored.
-
 ```PHP
 $router
   ->on('/foo', function() { ... })
@@ -299,48 +301,45 @@ All methods:
 * domain
 * resource
 
-have last argument named `$options`, now it support next params:
+can be additionaly setuped with next methods:
 
-* secure - secure flag
-* middleware - hold middleware chain
-* auth - access checker
+* withSecure - secure settings
+* withMiddleware, withoutMiddleware, withoutAnyMiddleware - manage middleware chain
+* withAuth - access checker
 
 Options defined in parent sections, will be inherited by childs, e.g.:
 ```PHP
-$router->group('/api', function ($router) {
-  // now in inherit options defined in group
-  $router->get('/users/:id', function() {...});
-}, [
-  'secure' => true,
-  'middleware' => ['MiddlewareAuth','MiddlewareCompressor']
-]);
+$router
+  ->group('/api', function ($router) {
+    // now in inherit options defined in group
+    $router->get('/users/:id', function() {...});
+  })
+    ->withSsecure(true),
+    ->withMiddleware(['MiddlewareAuth','MiddlewareCompressor'])
+  ->group('/another-group', ...);
 ```
 
 You can override inherited, just define personal:
 ```PHP
 $router->group('/api', function ($router) {
   // now in inherit options defined in group
-  $router->get('/users/:id', function() {...}, [
-    'secure' => false
-  ]);
-}, [
-  'secure' => true,
-  'middleware' => ['MiddlewareAuth','MiddlewareCompressor']
-]);
+  $router->get('/users/:id', function() {...})
+    ->withSecure(false);
+})
+  ->withSecure(true)
+  ->withMiddleware(['MiddlewareAuth','MiddlewareCompressor']);
 ```
 For defining global pre-setuped options use `Beacon\Router::globals(array $options)`.
 ```PHP
 $router
-  ->globals([
-    'secure' => true,
-    'middleware' => ['MiddlewareAuth']
-  ])
+  ->globals()
+    withSecure(true)
+    withMiddleware(['MiddlewareAuth'])
   // inherit global options
   ->get('/', 'Controller::index')
   // override global
-  ->post('/users', 'ControllerUsers::getUsers', [
-    'secure' => false
-  ])
+  ->post('/users', 'ControllerUsers::getUsers')
+    ->withSecure(false)
 ```
 
 ## Middleware chain
@@ -365,6 +364,14 @@ Now middleware stack for:
    `/` is `['MiddlewareAuth','MiddlewareApi']`
    `/api/guest` is `['MiddlewareApi','MiddlewareGuest']`
    `/api/secure` is `['MiddlewareSecure']`
+
+## Secure
+If you wahha routes, that must be handle over https only, setup it like this:
+```PHP
+$router
+  ->get('/pay', 'System::pay')
+    ->withSecure(true)
+```
 
 ## Auth
 You can assign callback for access check:

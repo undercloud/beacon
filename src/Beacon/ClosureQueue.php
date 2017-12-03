@@ -82,10 +82,8 @@ class ClosureQueue
      */
     public function getClosure()
     {
-        $queue = $this->queue;
-
-        return function () use ($queue) {
-            foreach ($queue as $q) {
+        return function () {
+            foreach ($this->queue as $q) {
                 call_user_func($q);
             }
         };
