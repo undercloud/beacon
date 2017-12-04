@@ -46,8 +46,8 @@ $router = new Beacon\Router([
 ```
 
 ## Concept
-The API is built on the principle of a (fluent interface)
-[https://en.wikipedia.org/wiki/Fluent_interface]
+The API is built on the principle of a 
+https://en.wikipedia.org/wiki/Fluent_interface
 
 ## Define routes
 Here's a basic usage example:
