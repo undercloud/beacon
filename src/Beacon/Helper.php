@@ -20,7 +20,7 @@ class Helper
     public function noop()
     {
         return function () {
-
+            /* ... */
         };
     }
 

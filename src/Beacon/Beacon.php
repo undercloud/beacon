@@ -5,4 +5,3 @@ require_once __DIR__ . '/Helper.php';
 require_once __DIR__ . '/Matcher.php';
 require_once __DIR__ . '/RouteException.php';
 require_once __DIR__ . '/RouteError.php';
-require_once __DIR__ . '/ClosureQueue.php';

@@ -1,8 +1,6 @@
 <?php
 namespace Beacon;
 
-use Exception;
-
 /**
  * Route
  *
@@ -98,7 +96,7 @@ class Route
         $property = strtolower(substr($method, 3));
 
         if (!property_exists($this, $property)) {
-            throw new Exception(
+            throw new RouteException(
                 sprintf(
                     'Property %s is not defined in %s',
                     $property,
@@ -113,7 +111,7 @@ class Route
             return $this->{$property};
         }
 
-        throw new Exception(
+        throw new RouteException(
             sprintf('Method %s is not defined in %s', $method, __CLASS__)
         );
     }
