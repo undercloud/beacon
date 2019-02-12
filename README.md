@@ -361,12 +361,12 @@ $router
     ->withMiddleware('MiddlewareApi');
 ```
 Now middleware stack for:
-   `/` is `['MiddlewareAuth','MiddlewareApi']`
-   `/api/guest` is `['MiddlewareApi','MiddlewareGuest']`
-   `/api/secure` is `['MiddlewareSecure']`
+   * `/` is `['MiddlewareAuth','MiddlewareApi']`
+   * `/api/guest` is `['MiddlewareApi','MiddlewareGuest']`
+   * `/api/secure` is `['MiddlewareSecure']`
 
 ## Secure
-If you wahha routes, that must be handle over https only, setup it like this:
+If you wanna routes, that must be handle over https only, setup it like this:
 ```PHP
 $router
   ->get('/pay', 'System::pay')
