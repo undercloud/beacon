@@ -6,5 +6,11 @@
         class_alias('\PHPUnit\Framework\TestCase', '\PHPUnit_Framework_TestCase');
     }
 
+    if (defined('HHVM_VERSION') or version_compare(PHP_VERSION, '7.2.0') >= 0) {
+        require_once __DIR__ . '/Beacon/Tests/BeaconSetup72.php';
+    } else {
+        require_once __DIR__ . '/Beacon/Tests/BeaconSetup.php';
+    }
+
 	require_once __DIR__ . '/../src/Beacon/Beacon.php';
 ?>
