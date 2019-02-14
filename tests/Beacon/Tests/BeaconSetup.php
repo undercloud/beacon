@@ -3,7 +3,7 @@ namespace Beacon\Tests;
 
 use PHPUnit_Framework_TestCase;
 
-class BeaconSetupTest extends PHPUnit_Framework_TestCase
+class BeaconSetup extends PHPUnit_Framework_TestCase
 {
     protected $router;
 

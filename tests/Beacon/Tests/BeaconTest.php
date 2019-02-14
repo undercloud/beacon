@@ -3,18 +3,9 @@ namespace Beacon\Tests;
 
 use Beacon\Router;
 use Beacon\RouteError;
-use PHPUnit_Framework_TestCase;
 
-class BeaconTest extends PHPUnit_Framework_TestCase
+class BeaconTest extends BeaconSetup
 {
-    private $router;
-
-    public function setUp()
-    {
-        error_reporting(-1);
-        $this->router = require(__DIR__ . '/BeaconPreset.php');
-    }
-
     public function testBind()
     {
         $route = $this->router
