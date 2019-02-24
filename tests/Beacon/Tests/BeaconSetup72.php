@@ -9,7 +9,6 @@ class BeaconSetup extends PHPUnit_Framework_TestCase
 
     protected function setUp(): void
     {
-        error_reporting(-1);
         $this->router = require(__DIR__ . '/BeaconPreset.php');
     }
 }
