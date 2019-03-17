@@ -165,14 +165,14 @@ class Router
             return;
         }
 
-        $path = $this->helper::normalize($path);
+        $path = $this->helper->normalize($path);
         $path = implode($this->groups) . $path;
 
         $route = new Route;
 
         $route->setOrigin($path);
 
-        $path = $this->helper::compile($path);
+        $path = $this->helper->compile($path);
 
         $prefix = null;
         if ($this->domain) {
@@ -608,7 +608,7 @@ class Router
         }
 
         $uri = rawurldecode($uri);
-        $uri = $this->helper::normalize($uri);
+        $uri = $this->helper->normalize($uri);
 
         krsort($this->routes);
 
