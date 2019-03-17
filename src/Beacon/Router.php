@@ -130,8 +130,6 @@ class Router
     /**
      * Setup global values
      *
-     * @param array $options list
-     *
      * @return self
      */
     public function globals()
@@ -150,7 +148,9 @@ class Router
      * @param callable $call    callback
      * @param array    $options list
      *
-     * @return null
+     * @throws RouteException
+     *
+     * @return void
      */
     private function bind($path, $call, array $options = [])
     {
@@ -165,14 +165,14 @@ class Router
             return;
         }
 
-        $path = $this->helper->normalize($path);
+        $path = $this->helper::normalize($path);
         $path = implode($this->groups) . $path;
 
         $route = new Route;
 
         $route->setOrigin($path);
 
-        $path = $this->helper->compile($path);
+        $path = $this->helper::compile($path);
 
         $prefix = null;
         if ($this->domain) {
@@ -212,6 +212,8 @@ class Router
      * @param string   $path value
      * @param callable $call callback
      *
+     * @throws RouteException
+     *
      * @return self
      */
     public function on($path, $call)
@@ -228,6 +230,8 @@ class Router
      * @param string   $path   value
      * @param callable $call   callback
      *
+     * @throws RouteException
+     *
      * @return self
      */
     public function match(array $method, $path, $call)
@@ -242,6 +246,8 @@ class Router
      *
      * @param string   $path value
      * @param callable $call callback
+     *
+     * @throws RouteException
      *
      * @return self
      */
@@ -258,6 +264,8 @@ class Router
      * @param string   $path value
      * @param callable $call callback
      *
+     * @throws RouteException
+     *
      * @return self
      */
     public function post($path, $call)
@@ -272,6 +280,8 @@ class Router
      *
      * @param string   $path value
      * @param callable $call callback
+     *
+     * @throws RouteException
      *
      * @return self
      */
@@ -288,6 +298,8 @@ class Router
      * @param string   $path value
      * @param callable $call callback
      *
+     * @throws RouteException
+     *
      * @return self
      */
     public function delete($path, $call)
@@ -303,6 +315,8 @@ class Router
      * @param string   $path value
      * @param callable $call callback
      *
+     * @throws RouteException
+     *
      * @return self
      */
     public function patch($path, $call)
@@ -317,6 +331,8 @@ class Router
      *
      * @param string   $path value
      * @param callable $call callback
+     *
+     * @throws RouteException
      *
      * @return self
      */
@@ -399,6 +415,8 @@ class Router
      * @param string $path       value
      * @param string $controller name
      *
+     * @throws RouteException
+     *
      * @return self
      */
     public function controller($path, $controller)
@@ -407,7 +425,7 @@ class Router
         $this->optionCursor = &$options;
 
         $this->controller = true;
-        $this->on($path, $controller, $options);
+        $this->on($path, $controller);
         $this->controller = false;
 
         return $this;
@@ -420,6 +438,8 @@ class Router
      * @param string $controller name
      * @param string $paramName  parameter name
      *
+     * @throws RouteException
+     *
      * @return self
      */
     public function resource($path, $controller, $paramName = 'id')
@@ -428,13 +448,13 @@ class Router
         $this->optionCursor = &$options;
 
         $this->rest = true;
-        $this->get($path, $controller . '::index', $options);
-        $this->get($path . '/create', $controller . '::create', $options);
-        $this->post($path, $controller . '::store', $options);
-        $this->get($path . '/:' . $paramName, $controller . '::show', $options);
-        $this->get($path . '/:' . $paramName . '/edit', $controller . '::edit', $options);
-        $this->put($path . '/:' . $paramName, $controller . '::update', $options);
-        $this->delete($path . '/:' . $paramName, $controller . '::destroy', $options);
+        $this->get($path, $controller . '::index');
+        $this->get($path . '/create', $controller . '::create');
+        $this->post($path, $controller . '::store');
+        $this->get($path . '/:' . $paramName, $controller . '::show');
+        $this->get($path . '/:' . $paramName . '/edit', $controller . '::edit');
+        $this->put($path . '/:' . $paramName, $controller . '::update');
+        $this->delete($path . '/:' . $paramName, $controller . '::destroy');
         $this->rest = false;
 
         return $this;
@@ -577,7 +597,9 @@ class Router
      *
      * @param string $uri request uri
      *
-     * @return Beacon\Route
+     * @throws \ReflectionException
+     *
+     * @return Route
      */
     public function go($uri)
     {
@@ -586,7 +608,7 @@ class Router
         }
 
         $uri = rawurldecode($uri);
-        $uri = $this->helper->normalize($uri);
+        $uri = $this->helper::normalize($uri);
 
         krsort($this->routes);
 
@@ -619,7 +641,7 @@ class Router
                 return $this->fallbackRoute;
             }
 
-            $this->helper->fetchPlaceholder($route, $uri);
+            $this->helper::fetchPlaceholder($route, $uri);
 
             if (!$this->matcher->checkWhere($route)) {
                 RouteError::setErrorCode(RouteError::WHERE_REGEX_ERROR);

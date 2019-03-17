@@ -24,13 +24,13 @@ class Matcher
      *
      * @return bool
      */
-	public function checkPath(Route $route, $uri)
-	{
-		$path = $route->getPath();
-		$pattern = '~^' . $path . '(/|$)~';
+    public function checkPath(Route $route, $uri)
+    {
+        $path = $route->getPath();
+        $pattern = '~^' . $path . '(/|$)~';
 
-		return preg_match($pattern, $uri);
-	}
+        return preg_match($pattern, $uri);
+    }
 
     /**
      * Compare domain
@@ -40,16 +40,16 @@ class Matcher
      *
      * @return bool
      */
-	public function checkDomain(Route $route, $host)
-	{
-		$regexp = $route->getDomain();
+    public function checkDomain(Route $route, $host)
+    {
+        $regexp = $route->getDomain();
 
-		if (!$regexp) {
+        if (!$regexp) {
             return true;
         }
 
-		return preg_match('~^' . $regexp . '$~', $host);
-	}
+        return preg_match('~^' . $regexp . '$~', $host);
+    }
 
     /**
      * Check secure connection
@@ -59,18 +59,18 @@ class Matcher
      *
      * @return bool
      */
-	public function checkSecure(Route $route, $currentSecure)
-	{
-		$secure = $route->getSecure();
+    public function checkSecure(Route $route, $currentSecure)
+    {
+        $secure = $route->getSecure();
 
-		if ($secure) {
-			if (!$currentSecure) {
-				return false;
-			}
-		}
+        if ($secure) {
+            if (!$currentSecure) {
+                return false;
+            }
+        }
 
-		return true;
-	}
+        return true;
+    }
 
     /**
      * Check controller
@@ -78,49 +78,51 @@ class Matcher
      * @param Route  $route instance
      * @param string $uri   string
      *
+     * @throws ReflectionException
+     *
      * @return bool
      */
-	public function checkController(Route $route, $uri)
-	{
-		if (!$route->getController()) {
+    public function checkController(Route $route, $uri)
+    {
+        if (!$route->getController()) {
             return true;
         }
 
-		$path = $route->getPath();
-		$slice = substr($uri, strlen($path));
+        $path = $route->getPath();
+        $slice = substr($uri, strlen($path));
 
-		if (!$slice) {
+        if (!$slice) {
             return false;
         }
 
-		$filtered = array_filter(explode('/', $slice));
-		$action = reset($filtered);
-		$action = preg_replace('~\W~', '', (string)$action);
+        $filtered = array_filter(explode('/', $slice));
+        $action = reset($filtered);
+        $action = preg_replace('~\W~', '', (string)$action);
 
-		if (!$action) {
+        if (!$action) {
             return false;
         }
 
-		$controller = $route->getCallback();
+        $controller = $route->getCallback();
 
-		try {
-			$class = new ReflectionClass($controller);
-		} catch (ReflectionException $e) {
-			return false;
-		}
-
-		if (!$class->hasMethod($action)) {
+        try {
+            $class = new ReflectionClass($controller);
+        } catch (ReflectionException $e) {
             return false;
         }
 
-		if (!$class->getMethod($action)->isPublic()) {
+        if (!$class->hasMethod($action)) {
             return false;
         }
 
-		$route->setCallback($controller . '::' . $class->getMethod($action)->getName());
+        if (!$class->getMethod($action)->isPublic()) {
+            return false;
+        }
 
-		return true;
-	}
+        $route->setCallback($controller . '::' . $class->getMethod($action)->getName());
+
+        return true;
+    }
 
     /**
      * Check REST
@@ -129,16 +131,16 @@ class Matcher
      *
      * @return bool
      */
-	public function checkRest(Route $route)
-	{
-		if (!$route->getRest()) {
+    public function checkRest(Route $route)
+    {
+        if (!$route->getRest()) {
             return true;
         }
 
-		list($controller, $action) = explode('::', $route->getCallback());
+        list($controller, $action) = explode('::', $route->getCallback());
 
-		return method_exists($controller, $action);
-	}
+        return method_exists($controller, $action);
+    }
 
     /**
      * Check where params
@@ -147,31 +149,33 @@ class Matcher
      *
      * @return bool
      */
-	public function checkWhere(Route $route)
-	{
-		$where = $route->getWhere();
-		$params = $route->getParams();
+    public function checkWhere(Route $route)
+    {
+        $where = $route->getWhere();
+        $params = $route->getParams();
 
-		foreach ($params as $key => $value) {
-			if (isset($where[$key])) {
-				if (!preg_match($where[$key]['regexp'], $value)) {
-					if (!isset($where[$key]['default'])) {
+        foreach ($params as $key => $value) {
+            if (isset($where[$key])) {
+                if (!preg_match($where[$key]['regexp'], $value)) {
+                    if (!isset($where[$key]['default'])) {
                         return false;
                     }
 
-					$params[$key] = $where[$key]['default'];
-					$route->setParams($params);
-				}
-			}
-		}
+                    $params[$key] = $where[$key]['default'];
+                    $route->setParams($params);
+                }
+            }
+        }
 
-		return true;
-	}
+        return true;
+    }
 
     /**
      * Check auth
      *
      * @param Route $route instance
+     *
+     * @throws ReflectionException
      *
      * @return bool
      */

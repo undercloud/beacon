@@ -15,7 +15,7 @@ class Helper
     /**
      * Create noop callback
      *
-     * @return Closure
+     * @return \Closure
      */
     public function noop()
     {
@@ -60,7 +60,6 @@ class Helper
             }
 
             return $compiled;
-
         };
 
         return preg_replace_callback($regexp, $compiler, $path);
@@ -97,12 +96,12 @@ class Helper
     }
 
     /**
-     * Fetch flaceholder segments
+     * Fetch placeholder segments
      *
      * @param Route  $route instance
      * @param string $path  pattern
      *
-     * @return null
+     * @return void
      */
     public static function fetchPlaceholder(Route $route, $path)
     {
@@ -165,7 +164,7 @@ class Helper
 
                         $value = (array) $value;
 
-                        list($corns, $darnels) = call_user_func(
+                        list($corns, $husk) = call_user_func(
                             function ($array) {
                                 $ok = $fail = [];
 
@@ -177,19 +176,19 @@ class Helper
                                     }
                                 }
 
-                                return array($ok, $fail);
+                                return [$ok, $fail];
                             },
                             $value
                         );
 
                         if ($key == 'middleware') {
-                            if ([-1] === $darnels) {
-                                $formatted[$key] = $darnels = [];
+                            if ([-1] === $husk) {
+                                $formatted[$key] = $husk = [];
                             }
                         }
 
-                        if ($darnels) {
-                            $formatted[$key] = $darnels;
+                        if ($husk) {
+                            $formatted[$key] = $husk;
                         } else {
                             foreach ($corns as $corn) {
                                 if (-1 === $corn) {
@@ -201,7 +200,7 @@ class Helper
                                 if ($op === 'add') {
                                     $formatted[$key][] = $item;
                                 } elseif ($op === 'del') {
-                                    $formatted[$key] = array_diff($formatted[$key], array($item));
+                                    $formatted[$key] = array_diff($formatted[$key], [$item]);
                                 }
                             }
                         }

@@ -9,6 +9,29 @@ namespace Beacon;
  * @author   undercloud <lodashes@gmail.com>
  * @license  https://opensource.org/licenses/MIT MIT
  * @link     http://github.com/undercloud/beacon
+ *
+ * @method setPath($path)
+ * @method getPath()
+ * @method setOrigin($origin)
+ * @method getOrigin()
+ * @method setDomain($domain)
+ * @method getDomain()
+ * @method setCallback($callback)
+ * @method getCallback()
+ * @method setController($controller)
+ * @method getController()
+ * @method setRest($rest)
+ * @method getRest()
+ * @method setParams($params)
+ * @method getParams()
+ * @method setWildcard($wildcard)
+ * @method getWildcard()
+ * @method setAuth($auth)
+ * @method getAuth()
+ * @method setSecure($secure)
+ * @method getSecure()
+ * @method setWhere($where)
+ * @method getWhere()
  */
 class Route
 {
@@ -88,6 +111,8 @@ class Route
      * @param string $method name
      * @param array  $args   list
      *
+     * @throws RouteException
+     *
      * @return mixed
      */
     public function __call($method, $args)
@@ -121,7 +146,7 @@ class Route
      *
      * @param array $options list
      *
-     * @return null
+     * @return void
      */
     public function setOptions(array $options)
     {
@@ -139,7 +164,7 @@ class Route
      *
      * @param array $options list
      *
-     * @return null
+     * @return void
      */
     public function holdOptions(array $options)
     {
@@ -149,7 +174,7 @@ class Route
     /**
      * Build options;
      *
-     * @return null
+     * @return void
      */
     public function assignOptions()
     {

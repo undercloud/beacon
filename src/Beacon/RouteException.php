@@ -12,4 +12,7 @@ use Exception;
  * @license  https://opensource.org/licenses/MIT MIT
  * @link     http://github.com/undercloud/beacon
  */
-class RouteException extends Exception {}
+class RouteException extends Exception
+{
+
+}
