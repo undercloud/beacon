@@ -641,7 +641,7 @@ class Router
                 return $this->fallbackRoute;
             }
 
-            $this->helper::fetchPlaceholder($route, $uri);
+            $this->helper->fetchPlaceholder($route, $uri);
 
             if (!$this->matcher->checkWhere($route)) {
                 RouteError::setErrorCode(RouteError::WHERE_REGEX_ERROR);
