@@ -314,7 +314,7 @@ $router
     // now in inherit options defined in group
     $router->get('/users/:id', function() {...});
   })
-    ->withSsecure(true),
+    ->withSecure(true),
     ->withMiddleware(['MiddlewareAuth','MiddlewareCompressor'])
   ->group('/another-group', ...);
 ```
