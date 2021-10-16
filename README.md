@@ -1,5 +1,5 @@
 # Beacon - PHP Routing System
-[![Build Status](https://travis-ci.org/undercloud/beacon.svg?branch=master)](https://travis-ci.org/undercloud/beacon)
+[![Build Status](https://travis-ci.com/undercloud/beacon.svg?branch=master)](https://travis-ci.com/undercloud/beacon)
 
 ## Features
 - Zero dependency
